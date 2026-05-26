@@ -642,6 +642,8 @@ Acceptance criteria:
 
 ### Milestone 9.9: PDE Solver Intuition, Schemes, and Error Sources
 
+Status: implemented.
+
 Expand the PDE lab with numerical-method intuition.
 
 Topics:
