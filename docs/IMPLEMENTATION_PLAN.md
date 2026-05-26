@@ -190,6 +190,8 @@ Acceptance criteria:
 
 ## Milestone 4: GBM Simulation
 
+Status: implemented.
+
 Implement geometric Brownian motion paths under the risk-neutral measure.
 
 Math:
