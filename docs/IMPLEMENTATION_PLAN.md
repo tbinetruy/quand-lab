@@ -542,7 +542,7 @@ Acceptance criteria:
 
 ### Milestone 9.6: Black-Scholes Derivation and Closed-Form Intuition
 
-Status: partially implemented. Needs a deeper derivation after Milestone 9.3.
+Status: implemented, with probability-measure foundations to be separated into Milestone 9.5.
 
 Expand the Black-Scholes lab with a guided derivation.
 
@@ -553,7 +553,7 @@ Topics:
 - delta hedging and why the random term can be removed
 - no-arbitrage argument for the Black-Scholes PDE
 - risk-neutral dynamics
-- high-level transformation from PDE to closed-form European option formula
+- risk-neutral expected payoff derivation of European call and put formulas
 - intuition for `d1` and `d2`
 - put-call parity as a consistency check
 

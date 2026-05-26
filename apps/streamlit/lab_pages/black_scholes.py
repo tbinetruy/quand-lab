@@ -70,22 +70,29 @@ def render() -> None:
     st.subheader("Derivation")
     st.markdown(
         """
-        Under the physical model, GBM uses an expected return $\\mu$:
+        Start with a real-world GBM model for the underlying:
         """
     )
     st.markdown(r"$$dS_t=\mu S_t\,dt+\sigma S_t\,dW_t$$")
     st.markdown(
         """
-        The option value is a function of spot and time: $V(S,t)$. Ito's lemma
-        is the stochastic-calculus rule for differentiating such a function when
-        $S_t$ has Brownian noise. At a high level, it says the option value
-        changes because time passes, spot moves, and Brownian motion has
-        quadratic variation:
+        The option value is a function of time and spot: $V(t,S_t)$. Apply
+        Ito's lemma to this function. Here:
         """
     )
     st.markdown(
         "$$"
-        r"dV = \left(\frac{\partial V}{\partial t}"
+        r"a_t=\mu S_t,\qquad b_t=\sigma S_t"
+        "$$"
+    )
+    st.markdown(
+        """
+        Substituting into Ito's lemma gives:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"dV=\left(\frac{\partial V}{\partial t}"
         r"+\mu S\frac{\partial V}{\partial S}"
         r"+\frac{1}{2}\sigma^2S^2\frac{\partial^2V}{\partial S^2}\right)dt"
         r"+\sigma S\frac{\partial V}{\partial S}dW_t"
@@ -93,18 +100,98 @@ def render() -> None:
     )
     st.markdown(
         """
-        The random term is the part multiplied by $dW_t$. Black-Scholes removes
-        that randomness by holding one option and shorting $\\Delta$ shares of
-        the underlying:
+        The term multiplied by $dW_t$ is the local randomness in the option
+        value. Black-Scholes constructs a portfolio that removes this
+        randomness instant by instant:
         """
     )
     st.markdown(r"$$\Pi = V - \Delta S$$")
     st.markdown(
         """
-        Choose $\\Delta = \\frac{\\partial V}{\\partial S}$. The Brownian shock in
-        the option is then offset by the Brownian shock in the stock hedge. The
-        hedged portfolio is locally riskless, so by no-arbitrage it must earn
-        the risk-free rate. That argument gives the Black-Scholes PDE:
+        This means: hold one option and short $\\Delta$ shares of the underlying.
+        Over a tiny time step, the self-financing change in the portfolio is:
+        """
+    )
+    st.markdown(r"$$d\Pi=dV-\Delta\,dS-\Delta qS\,dt$$")
+    st.markdown(
+        """
+        The last term is the dividend cashflow. Because the portfolio is short
+        $\\Delta$ shares, it must pay the dividends on those shares. That cash
+        outflow is $-\\Delta qSdt$.
+        """
+    )
+    st.markdown(
+        """
+        Now substitute $dV$ and $dS$:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"d\Pi="
+        r"\left(\frac{\partial V}{\partial t}"
+        r"+\mu S\frac{\partial V}{\partial S}"
+        r"+\frac{1}{2}\sigma^2S^2\frac{\partial^2V}{\partial S^2}\right)dt"
+        r"+\sigma S\frac{\partial V}{\partial S}dW_t"
+        r"-\Delta(\mu Sdt+\sigma SdW_t)"
+        r"-\Delta qSdt"
+        "$$"
+    )
+    st.markdown(
+        """
+        Group the random $dW_t$ terms:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"\sigma S\left(\frac{\partial V}{\partial S}-\Delta\right)dW_t"
+        "$$"
+    )
+    st.markdown(
+        """
+        Choose the hedge ratio:
+        """
+    )
+    st.markdown(r"$$\Delta=\frac{\partial V}{\partial S}$$")
+    st.markdown(
+        """
+        This cancels the Brownian shock. The portfolio is locally riskless, so
+        no-arbitrage says it must earn the risk-free rate:
+        """
+    )
+    st.markdown(r"$$d\Pi=r\Pi\,dt=r\left(V-\Delta S\right)dt$$")
+    st.markdown(
+        """
+        After setting $\\Delta=\\frac{\\partial V}{\\partial S}$, the left-hand
+        side becomes:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"d\Pi="
+        r"\left("
+        r"\frac{\partial V}{\partial t}"
+        r"+\frac{1}{2}\sigma^2S^2\frac{\partial^2V}{\partial S^2}"
+        r"-qS\frac{\partial V}{\partial S}"
+        r"\right)dt"
+        "$$"
+    )
+    st.markdown(
+        """
+        Equate the two riskless returns:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"\frac{\partial V}{\partial t}"
+        r"+\frac{1}{2}\sigma^2S^2\frac{\partial^2V}{\partial S^2}"
+        r"-qS\frac{\partial V}{\partial S}"
+        r"=r\left(V-S\frac{\partial V}{\partial S}\right)"
+        "$$"
+    )
+    st.markdown(
+        """
+        Move everything to the left. This is the Black-Scholes PDE for a
+        European option on an underlying with continuous dividend yield:
         """
     )
     st.markdown(
@@ -118,35 +205,190 @@ def render() -> None:
     st.markdown(
         """
         Notice that $\\mu$ disappeared. The option price does not use the
-        investor's expected stock return directly; the hedge removes that source
-        of risk from the pricing equation. This is one way to understand why
-        risk-neutral pricing works.
+        investor's expected stock return directly. The hedge removes the local
+        Brownian risk, and the remaining riskless portfolio is priced from the
+        risk-free rate.
         """
     )
 
     st.subheader("Closed Form")
     st.markdown(
         """
-        For European calls and puts, the PDE can be transformed into the heat
-        equation and solved analytically. We will not do the full heat-equation
-        transformation here; the important outcome is that the terminal payoff
-        plus GBM lognormality leads to the formulas below.
+        The PDE route and the risk-neutral expectation route are equivalent in
+        this model. For the closed form, the expectation route is more direct.
+        We write $C$ for the call price today and $P$ for the put price today.
 
-        The quantities $d_1$ and $d_2$ are standardized log-moneyness terms.
-        Roughly, $d_2$ is tied to the probability of finishing in-the-money
-        under the risk-neutral distribution, while $d_1$ appears in the
-        stock-weighted part of the expected payoff.
+        Under the risk-neutral measure, the GBM terminal price is:
         """
     )
     st.markdown(
-        r"""
-        $$d_1 = \frac{\ln(S_0/K) + (r - q + \frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}$$
-
-        $$d_2 = d_1 - \sigma\sqrt{T}$$
-
-        $$C = S_0 e^{-qT}N(d_1) - K e^{-rT}N(d_2)$$
-
-        $$P = K e^{-rT}N(-d_2) - S_0 e^{-qT}N(-d_1)$$
+        "$$"
+        r"S_T=S_0\exp\left("
+        r"(r-q-\frac{1}{2}\sigma^2)T+\sigma\sqrt{T}Z"
+        r"\right),\qquad Z\sim\mathcal{N}(0,1)"
+        "$$"
+    )
+    st.markdown(
+        """
+        A European call pays only when $S_T>K$. Its payoff at maturity is:
+        """
+    )
+    st.markdown(r"$$\Phi_{call}(S_T)=\max(S_T-K,0)$$")
+    st.markdown(
+        """
+        The notation $(x)^+$ means the positive part of $x$:
+        """
+    )
+    st.markdown(r"$$(x)^+=\max(x,0)$$")
+    st.markdown(
+        """
+        Risk-neutral pricing says today's price is the discounted expected
+        payoff under the pricing measure $Q$. Therefore:
+        """
+    )
+    st.markdown(r"$$C=e^{-rT}\operatorname{E}^Q[(S_T-K)^+]$$")
+    st.markdown(
+        """
+        Split the payoff into two pieces: receive the stock if exercise happens,
+        and pay the strike if exercise happens.
+        """
+    )
+    st.markdown(
+        "$$"
+        r"(S_T-K)^+=(S_T-K)\mathbf{1}_{S_T>K}"
+        r"=S_T\mathbf{1}_{S_T>K}-K\mathbf{1}_{S_T>K}"
+        "$$"
+    )
+    st.markdown(
+        """
+        The indicator $\\mathbf{1}_{S_T>K}$ is a random variable. Its
+        expectation is the probability of the event:
+        """
+    )
+    st.markdown(r"$$\operatorname{E}^Q[\mathbf{1}_{S_T>K}]=Q(S_T>K)$$")
+    st.markdown(
+        "$$"
+        r"C=e^{-rT}\left("
+        r"\operatorname{E}^Q[S_T\mathbf{1}_{S_T>K}]"
+        r"-KQ(S_T>K)"
+        r"\right)"
+        "$$"
+    )
+    st.markdown(
+        """
+        The exercise condition can be written as a threshold on the standard
+        normal variable $Z$. Start from the terminal GBM expression:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"S_0\exp\left((r-q-\frac{1}{2}\sigma^2)T+\sigma\sqrt{T}Z\right)>K"
+        "$$"
+    )
+    st.markdown("Divide by $S_0$ and take logs:")
+    st.markdown(
+        "$$"
+        r"(r-q-\frac{1}{2}\sigma^2)T+\sigma\sqrt{T}Z>\ln(K/S_0)"
+        "$$"
+    )
+    st.markdown("Now isolate $Z$:")
+    st.markdown(
+        "$$"
+        r"Z>"
+        r"\frac{\ln(K/S_0)-(r-q-\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}"
+        "$$"
+    )
+    st.markdown(
+        """
+        Define $d_2$ as the negative of that threshold:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"d_2="
+        r"\frac{\ln(S_0/K)+(r-q-\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}"
+        "$$"
+    )
+    st.markdown(
+        """
+        This definition is not arbitrary. It measures the risk-neutral expected
+        log-moneyness at maturity in units of terminal log-volatility. With this
+        definition, the exercise event is:
+        """
+    )
+    st.markdown(r"$$S_T>K\Longleftrightarrow Z>-d_2$$")
+    st.markdown(
+        """
+        By symmetry of the standard normal distribution:
+        """
+    )
+    st.markdown(r"$$Q(S_T>K)=N(d_2)$$")
+    st.markdown("The strike part is now clear:")
+    st.markdown(r"$$e^{-rT}KQ(S_T>K)=Ke^{-rT}N(d_2)$$")
+    st.markdown(
+        """
+        The stock part is a weighted expectation. The useful normal identity is:
+        """
+    )
+    st.markdown(r"$$\operatorname{E}[e^{aZ}\mathbf{1}_{Z>c}]=e^{a^2/2}N(a-c)$$")
+    st.markdown(
+        """
+        It comes from completing the square in the normal density:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"\int_c^\infty e^{az}\frac{1}{\sqrt{2\pi}}e^{-z^2/2}dz"
+        r"=e^{a^2/2}\int_c^\infty"
+        r"\frac{1}{\sqrt{2\pi}}e^{-(z-a)^2/2}dz"
+        r"=e^{a^2/2}N(a-c)"
+        "$$"
+    )
+    st.markdown(
+        """
+        Here $a=\\sigma\\sqrt{T}$ and $c=-d_2$, so $a-c=d_2+\\sigma\\sqrt{T}$.
+        Define:
+        """
+    )
+    st.markdown(r"$$d_1=d_2+\sigma\sqrt{T}$$")
+    st.markdown(
+        "$$"
+        r"d_1="
+        r"\frac{\ln(S_0/K)+(r-q+\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}"
+        "$$"
+    )
+    st.markdown("Then the discounted stock-weighted term becomes:")
+    st.markdown(
+        r"$$e^{-rT}\operatorname{E}^Q[S_T\mathbf{1}_{S_T>K}]"
+        r"=S_0e^{-qT}N(d_1)$$"
+    )
+    st.markdown("Putting the stock and strike pieces together gives the call formula:")
+    st.markdown(r"$$C=S_0e^{-qT}N(d_1)-Ke^{-rT}N(d_2)$$")
+    st.markdown(
+        """
+        The put formula follows from the same split, but now the payoff is
+        positive when $S_T<K$:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"P=e^{-rT}\left("
+        r"KQ(S_T<K)-\operatorname{E}^Q[S_T\mathbf{1}_{S_T<K}]"
+        r"\right)"
+        "$$"
+    )
+    st.markdown(
+        """
+        Since $Q(S_T<K)=N(-d_2)$ and the complementary stock-weighted term gives
+        $S_0e^{-qT}N(-d_1)$:
+        """
+    )
+    st.markdown(r"$$P=Ke^{-rT}N(-d_2)-S_0e^{-qT}N(-d_1)$$")
+    st.markdown(
+        """
+        So $d_2$ is tied to the exercise probability under the risk-neutral
+        distribution, while $d_1$ appears because the stock part of the payoff
+        is weighted by $S_T$ itself.
         """
     )
     st.markdown(
