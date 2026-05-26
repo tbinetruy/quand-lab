@@ -32,6 +32,90 @@ def render() -> None:
     st.subheader("Concept")
     st.markdown(
         """
+        The Black-Scholes price is one number, but a trading book needs to know
+        how that number changes when the market moves. Greeks are local
+        sensitivities of the price function $V$.
+
+        Local means "near the current inputs." A delta of $0.55$ does not mean
+        the option will behave like $0.55$ shares forever. It means that for a
+        small spot move around the current market state, the option price should
+        move roughly like $0.55$ shares.
+        """
+    )
+    st.table(
+        [
+            {
+                "Greek": "Delta",
+                "Practical question": "How much stock exposure does the option behave like?",
+                "Common use": "Directional exposure and hedge ratio.",
+            },
+            {
+                "Greek": "Gamma",
+                "Practical question": "How quickly will delta change if spot moves?",
+                "Common use": "Delta hedge stability and convexity risk.",
+            },
+            {
+                "Greek": "Vega",
+                "Practical question": "How much does the option care about volatility?",
+                "Common use": "Volatility exposure and implied-vol scenarios.",
+            },
+            {
+                "Greek": "Theta",
+                "Practical question": "How does value change as time passes?",
+                "Common use": "Time decay and carry analysis.",
+            },
+            {
+                "Greek": "Rho",
+                "Practical question": "How sensitive is the price to interest rates?",
+                "Common use": "Rate exposure, especially for longer maturities.",
+            },
+        ]
+    )
+    st.markdown(
+        """
+        Greeks are useful because they turn a nonlinear payoff into a set of
+        local risk numbers that can be aggregated, hedged, and stress tested.
+        They are not a complete risk model: large moves, changing volatility,
+        jumps, liquidity, and model error can all make local sensitivities
+        misleading.
+        """
+    )
+
+    st.subheader("Why This Matters Later")
+    st.markdown(
+        """
+        Greeks are the bridge from pricing one option to managing a book of
+        risk. Later, when we add market data and repeated model runs, Greeks
+        give us a compact way to ask better questions than "what is the price?"
+
+        They will be useful for:
+
+        - hedging: delta tells us how much underlying offsets small spot moves
+        - hedge maintenance: gamma tells us when a delta hedge will become stale
+        - volatility views: vega tells us whether a position benefits from
+          higher or lower implied volatility
+        - carry analysis: theta tells us what happens if the market does not
+          move but time passes
+        - scenario analysis: Greeks give first-order and second-order estimates
+          before we run full repricing shocks
+        - portfolio aggregation: exposures from many options can be summed by
+          underlying, maturity, volatility bucket, or strategy
+        - model diagnostics: unusual Greeks can reveal unstable inputs,
+          near-expiry behavior, or numerical issues
+        """
+    )
+    st.markdown(
+        """
+        They can also feed portfolio construction, but usually as risk
+        constraints rather than as the whole objective. For example, a strategy
+        might target a volatility exposure while keeping delta near zero, or
+        compare expected return against gamma and vega risk. Full optimization
+        still needs forecasts, costs, liquidity, and risk limits; Greeks tell us
+        what risks the candidate portfolio is carrying.
+        """
+    )
+    st.markdown(
+        """
         Symbols used below:
 
         - $\\Delta$: sensitivity to spot
@@ -48,6 +132,14 @@ def render() -> None:
     st.markdown(r"$$\nu = \frac{\partial V}{\partial \sigma}$$")
     st.markdown(r"$$\Theta = \frac{\partial V}{\partial t}$$")
     st.markdown(r"$$\rho = \frac{\partial V}{\partial r}$$")
+    st.markdown(
+        """
+        Analytical Greeks differentiate the Black-Scholes formula directly.
+        Finite-difference Greeks bump an input, reprice the option, and estimate
+        the derivative numerically. Comparing both is a good implementation
+        check and also shows what "sensitivity" means operationally.
+        """
+    )
 
     st.subheader("Implementation")
     show_source_file("src/quant_lab/risk/greeks.py")
@@ -97,6 +189,7 @@ def render() -> None:
     metric_right.metric("Absolute error", f"{abs(analytical_value - finite_difference):.6f}")
 
     st.markdown(f"{selected_greek.title()} over spot:")
+    st.markdown(_greek_curve_explanation(selected_greek))
     curve_rows = _greek_curve_rows(
         option=option,
         market=market,
@@ -121,6 +214,7 @@ def render() -> None:
     )
 
     st.markdown(f"{selected_greek.title()} surface over spot and volatility:")
+    st.markdown(_greek_surface_explanation(selected_greek))
     surface_rows = _greek_surface_rows(
         option=option,
         market=market,
@@ -220,6 +314,60 @@ def _greek_surface_rows(
             )
 
     return rows
+
+
+def _greek_curve_explanation(greek: GreekName) -> str:
+    if greek == "delta":
+        return (
+            "Delta shows directional stock exposure. Calls move from near 0 to near 1 "
+            "as spot rises through the strike. Puts move from near -1 to near 0."
+        )
+    if greek == "gamma":
+        return (
+            "Gamma is highest near the strike because that is where a small spot move "
+            "most changes the option's moneyness and therefore its delta."
+        )
+    if greek == "vega":
+        return (
+            "Vega is usually largest near the strike: volatility matters most when the "
+            "future payoff is uncertain."
+        )
+    if greek == "theta":
+        return (
+            "Theta shows time decay using the market convention dV/dt as calendar time "
+            "moves forward. Long options often lose time value as expiry approaches."
+        )
+    return (
+        "Rho shows rate exposure. It is often modest for short maturities and more "
+        "important when cashflows are farther in the future."
+    )
+
+
+def _greek_surface_explanation(greek: GreekName) -> str:
+    if greek == "delta":
+        return (
+            "The delta surface shows how hedge ratio changes across moneyness and "
+            "volatility. Higher volatility smooths the transition around the strike."
+        )
+    if greek == "gamma":
+        return (
+            "The gamma surface highlights where delta hedges are unstable. Gamma tends "
+            "to concentrate near the strike and can become sharper at lower volatility."
+        )
+    if greek == "vega":
+        return (
+            "The vega surface shows volatility exposure. It is concentrated where extra "
+            "dispersion can most change the chance of finishing in-the-money."
+        )
+    if greek == "theta":
+        return (
+            "The theta surface shows carry across spot and volatility. Its sign and "
+            "shape depend on option type, rates, dividends, and moneyness."
+        )
+    return (
+        "The rho surface shows how rate sensitivity varies across moneyness and "
+        "volatility. Longer-dated discounted strike exposure usually drives rho."
+    )
 
 
 def _replace_market(

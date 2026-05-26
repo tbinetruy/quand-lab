@@ -610,6 +610,8 @@ Acceptance criteria:
 
 ### Milestone 9.8: Greeks as Practical Risk Measures
 
+Status: implemented.
+
 Expand the Greeks page beyond calculation formulas into practical modelling and
 risk intuition.
 
