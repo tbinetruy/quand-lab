@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from lab_pages import domain_model
+from lab_pages import black_scholes, domain_model
 
 import streamlit as st
 from quant_lab import __version__
@@ -46,11 +46,13 @@ def main() -> None:
         st.title("Quant Lab")
         page = st.radio(
             "Lab",
-            options=["Introduction", "Domain Model"],
+            options=["Introduction", "Domain Model", "Black-Scholes"],
             label_visibility="collapsed",
         )
 
-    if page == "Domain Model":
+    if page == "Black-Scholes":
+        black_scholes.render()
+    elif page == "Domain Model":
         domain_model.render()
     else:
         render_intro()

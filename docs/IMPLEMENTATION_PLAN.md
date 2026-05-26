@@ -149,6 +149,8 @@ Acceptance criteria:
 
 ## Milestone 3: Black-Scholes Closed Form
 
+Status: implemented.
+
 Implement analytical European call and put pricing.
 
 Math:
