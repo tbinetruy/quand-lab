@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from lab_pages import black_scholes, domain_model, gbm_simulation
+from lab_pages import black_scholes, domain_model, gbm_simulation, monte_carlo_pricing
 
 import streamlit as st
 from quant_lab import __version__
@@ -46,11 +46,19 @@ def main() -> None:
         st.title("Quant Lab")
         page = st.radio(
             "Lab",
-            options=["Introduction", "Domain Model", "Black-Scholes", "GBM Simulation"],
+            options=[
+                "Introduction",
+                "Domain Model",
+                "Black-Scholes",
+                "GBM Simulation",
+                "Monte Carlo Pricing",
+            ],
             label_visibility="collapsed",
         )
 
-    if page == "GBM Simulation":
+    if page == "Monte Carlo Pricing":
+        monte_carlo_pricing.render()
+    elif page == "GBM Simulation":
         gbm_simulation.render()
     elif page == "Black-Scholes":
         black_scholes.render()

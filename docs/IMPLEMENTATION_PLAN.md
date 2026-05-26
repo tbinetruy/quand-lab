@@ -216,6 +216,8 @@ Acceptance criteria:
 
 ## Milestone 5: Monte Carlo Pricing
 
+Status: implemented.
+
 Implement Monte Carlo pricing for European options.
 
 Math:
