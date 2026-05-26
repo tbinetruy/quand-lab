@@ -750,6 +750,8 @@ finite-element intuition when those examples make the idea easier to see.
 
 ### Milestone 11.0: Formal Track Conventions
 
+Status: implemented.
+
 Define the page style before adding content.
 
 The Streamlit sidebar should communicate the learning architecture instead of

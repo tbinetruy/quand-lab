@@ -4,6 +4,7 @@ from lab_pages import (
     applied_risk,
     black_scholes,
     domain_model,
+    formal_katas,
     foundations,
     gbm_simulation,
     greeks,
@@ -15,6 +16,27 @@ from lab_pages import (
 
 import streamlit as st
 from quant_lab import __version__
+
+INTRO_TRACK = "Quant Foundations: Introduction and Intuition"
+FORMAL_TRACK = "Formal Katas: Rebuilding the Machinery"
+
+INTRO_PAGES = [
+    "Introduction",
+    "Foundations",
+    "Probability Primer",
+    "Stochastic Calculus",
+    "Domain Model",
+    "GBM Simulation",
+    "Black-Scholes",
+    "Monte Carlo Pricing",
+    "Greeks",
+    "PDE Solver",
+    "Applied Risk",
+]
+
+FORMAL_PAGES = [
+    "Formal Katas Overview",
+]
 
 
 def render_intro() -> None:
@@ -59,25 +81,23 @@ def main() -> None:
 
     with st.sidebar:
         st.title("Quant Lab")
-        page = st.radio(
-            "Lab",
+        track = st.radio(
+            "Learning track",
             options=[
-                "Introduction",
-                "Foundations",
-                "Probability Primer",
-                "Stochastic Calculus",
-                "Domain Model",
-                "GBM Simulation",
-                "Black-Scholes",
-                "Monte Carlo Pricing",
-                "Greeks",
-                "PDE Solver",
-                "Applied Risk",
+                INTRO_TRACK,
+                FORMAL_TRACK,
             ],
-            label_visibility="collapsed",
+        )
+        st.divider()
+        page_options = FORMAL_PAGES if track == FORMAL_TRACK else INTRO_PAGES
+        page = st.radio(
+            "Page",
+            options=page_options,
         )
 
-    if page == "Applied Risk":
+    if page == "Formal Katas Overview":
+        formal_katas.render()
+    elif page == "Applied Risk":
         applied_risk.render()
     elif page == "PDE Solver":
         pde_solver.render()
