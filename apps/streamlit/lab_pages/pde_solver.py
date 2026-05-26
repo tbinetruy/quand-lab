@@ -205,7 +205,8 @@ def render() -> None:
     )
     st.markdown(
         r"$$\frac{\partial^2V}{\partial S^2}\approx"
-        r"\frac{V_{i+1}^n-2V_i^n+V_{i-1}^n}{\Delta S^2}$$"
+        r"\underbrace{\frac{V_{i+1}^n-2V_i^n+V_{i-1}^n}{\Delta S^2}}"
+        r"_{\text{curvature from neighboring grid points}}$$"
     )
     st.markdown(
         """

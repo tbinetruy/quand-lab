@@ -180,7 +180,10 @@ def render() -> None:
     st.markdown(
         "$$"
         r"d\log S_t="
-        r"\left(\mu-\frac{1}{2}\sigma^2\right)dt+\sigma\,dW_t"
+        r"\underbrace{\left(\mu-\frac{1}{2}\sigma^2\right)dt}"
+        r"_{\text{drift after Ito correction}}"
+        r"+"
+        r"\underbrace{\sigma\,dW_t}_{\text{random shock}}"
         "$$"
     )
     st.markdown(
@@ -193,13 +196,19 @@ def render() -> None:
     st.markdown(
         "$$"
         r"\log S_{t+\Delta t}-\log S_t = "
-        r"(\mu-\frac{1}{2}\sigma^2)\Delta t + \sigma\sqrt{\Delta t}Z"
+        r"\underbrace{(\mu-\frac{1}{2}\sigma^2)\Delta t}"
+        r"_{\text{deterministic log-return}}"
+        r"+"
+        r"\underbrace{\sigma\sqrt{\Delta t}Z}_{\text{random log-return}}"
         "$$"
     )
     st.markdown(
         "$$"
         r"S_{t+\Delta t} = S_t \exp\left("
-        r"(\mu-\frac{1}{2}\sigma^2)\Delta t + \sigma\sqrt{\Delta t}Z"
+        r"\underbrace{(\mu-\frac{1}{2}\sigma^2)\Delta t}"
+        r"_{\text{deterministic log-return}}"
+        r"+"
+        r"\underbrace{\sigma\sqrt{\Delta t}Z}_{\text{random log-return}}"
         r"\right)"
         "$$"
     )

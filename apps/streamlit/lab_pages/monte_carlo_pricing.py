@@ -93,7 +93,12 @@ def render() -> None:
     )
     st.markdown(
         r"""
-        $$\hat{V}_0 = e^{-rT}\frac{1}{N}\sum_{i=1}^{N}\Phi(S_T^{(i)})$$
+        $$
+        \hat{V}_0 =
+        \underbrace{e^{-rT}}_{\text{discount factor}}
+        \underbrace{\frac{1}{N}\sum_{i=1}^{N}\Phi(S_T^{(i)})}
+        _{\text{simulated average payoff}}
+        $$
         """
     )
     st.markdown(

@@ -196,10 +196,16 @@ def render() -> None:
     )
     st.markdown(
         "$$"
-        r"\frac{\partial V}{\partial t}"
-        r"+\frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2}"
-        r"+(r-q)S\frac{\partial V}{\partial S}"
-        r"-rV=0"
+        r"\underbrace{\frac{\partial V}{\partial t}}_{\text{time change}}"
+        r"+"
+        r"\underbrace{\frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2}}"
+        r"_{\text{convexity / gamma term}}"
+        r"+"
+        r"\underbrace{(r-q)S\frac{\partial V}{\partial S}}"
+        r"_{\text{risk-neutral drift term}}"
+        r"-"
+        r"\underbrace{rV}_{\text{discounting term}}"
+        r"=0"
         "$$"
     )
     st.markdown(
@@ -363,7 +369,14 @@ def render() -> None:
         r"=S_0e^{-qT}N(d_1)$$"
     )
     st.markdown("Putting the stock and strike pieces together gives the call formula:")
-    st.markdown(r"$$C=S_0e^{-qT}N(d_1)-Ke^{-rT}N(d_2)$$")
+    st.markdown(
+        "$$"
+        r"C="
+        r"\underbrace{S_0e^{-qT}N(d_1)}_{\text{discounted stock leg}}"
+        r"-"
+        r"\underbrace{Ke^{-rT}N(d_2)}_{\text{discounted strike leg}}"
+        "$$"
+    )
     st.markdown(
         """
         The put formula follows from the same split, but now the payoff is
@@ -383,7 +396,14 @@ def render() -> None:
         $S_0e^{-qT}N(-d_1)$:
         """
     )
-    st.markdown(r"$$P=Ke^{-rT}N(-d_2)-S_0e^{-qT}N(-d_1)$$")
+    st.markdown(
+        "$$"
+        r"P="
+        r"\underbrace{Ke^{-rT}N(-d_2)}_{\text{discounted strike leg}}"
+        r"-"
+        r"\underbrace{S_0e^{-qT}N(-d_1)}_{\text{discounted stock leg}}"
+        "$$"
+    )
     st.markdown(
         """
         So $d_2$ is tied to the exercise probability under the risk-neutral
