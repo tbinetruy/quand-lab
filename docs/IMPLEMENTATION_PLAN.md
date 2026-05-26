@@ -326,7 +326,242 @@ Acceptance criteria:
 - boundary conditions are explicit and documented
 - numerical stability limitations are visible in the UI
 
-## Milestone 9: Data Layer Foundation
+## Milestone 9: Lab Book Learning Layer
+
+Turn the working labs into a more complete learning path. The goal is to keep
+the mathematical content sufficiently formal for an engineer, while still
+introducing concepts with intuition, examples, and guidance for interpreting
+the charts.
+
+Design principle:
+
+```text
+Definition -> Intuition -> Math -> Implementation -> What to look for
+```
+
+The lab book should not replace the interactive experiments. It should prepare
+the reader to understand what the experiment is showing, then point back to the
+actual typed Python implementation.
+
+### Milestone 9.1: Foundations and Option Vocabulary
+
+Introduce the basic objects used throughout the lab.
+
+Topics:
+
+- what call and put options are
+- strike, maturity, spot, payoff, premium, moneyness, intrinsic value, time value
+- payoff versus price
+- why an option can be worth more than immediate exercise value
+- risk-neutral pricing as an introductory idea, without full derivation yet
+
+Visual explanations:
+
+- call payoff shape
+- put payoff shape
+- intrinsic value versus time value
+- how moneyness changes as spot moves around strike
+
+Acceptance criteria:
+
+- symbols are introduced before equations use them
+- call and put payoff diagrams are explained in plain language
+- the Black-Scholes and Monte Carlo pages can link back to this vocabulary
+
+### Milestone 9.2: Random Variables, Processes, and Stochastic Calculus Primer
+
+Add a concise mathematical primer for the probability tools used later.
+
+Topics:
+
+- random variables and distributions
+- expectation, variance, standard deviation, standard error
+- random processes as time-indexed random variables
+- Brownian motion intuition
+- independent increments and normally distributed increments
+- drift and volatility
+- stochastic differential notation
+- Ito intuition and the special role of quadratic variation
+
+Example equations:
+
+```text
+W_{t+\Delta t} - W_t ~ N(0, \Delta t)
+dW_t^2 = dt
+```
+
+Acceptance criteria:
+
+- the explanation is introductory and does not assume prior stochastic calculus
+- equations are accompanied by practical interpretation
+- GBM, Monte Carlo, and Black-Scholes pages can refer back to this primer
+
+### Milestone 9.3: Geometric Brownian Motion Derivation and Interpretation
+
+Expand the GBM lab into a derivation-driven page.
+
+Topics:
+
+- why additive price models are problematic for equities
+- proportional returns
+- log returns
+- deriving the GBM SDE:
+
+```text
+dS_t = \mu S_t dt + \sigma S_t dW_t
+```
+
+- deriving the simulation step:
+
+```text
+S_{t+\Delta t} =
+S_t \exp((\mu - 0.5\sigma^2)\Delta t + \sigma\sqrt{\Delta t}Z)
+```
+
+- why GBM is used as a baseline model
+- what GBM gets wrong in real markets
+
+Graph explanations:
+
+- sample paths
+- terminal price distribution
+- drift effects
+- volatility effects
+- why path-level randomness and distribution-level stability coexist
+
+Acceptance criteria:
+
+- the GBM page explains both the SDE and the discrete simulator
+- chart captions explain what should change when parameters move
+- limitations are stated without derailing the introductory flow
+
+### Milestone 9.4: Black-Scholes Derivation and Closed-Form Intuition
+
+Expand the Black-Scholes lab with a guided derivation.
+
+Topics:
+
+- modelling assumptions
+- Ito's lemma applied to option value `V(S,t)`
+- delta hedging and why the random term can be removed
+- no-arbitrage argument for the Black-Scholes PDE
+- risk-neutral dynamics
+- high-level transformation from PDE to closed-form European option formula
+- intuition for `d1` and `d2`
+- put-call parity as a consistency check
+
+Graph explanations:
+
+- payoff diagram
+- price curve
+- price surface over spot and volatility
+- why calls and puts respond differently to spot
+- why both option types become more valuable as volatility rises
+
+Acceptance criteria:
+
+- the derivation is stepwise and symbol definitions are local to the section
+- the closed-form formula is connected back to the implementation
+- the graphs explain expected shapes and parameter sensitivities
+
+### Milestone 9.5: Monte Carlo Pricing Intuition and Convergence
+
+Expand the Monte Carlo lab with the probability argument behind pricing by
+simulation.
+
+Topics:
+
+- discounted expected payoff
+- risk-neutral expectation:
+
+```text
+V_0 = e^{-rT} E^Q[\Phi(S_T)]
+```
+
+- law of large numbers
+- why standard error shrinks like `1 / sqrt(N)`
+- confidence intervals
+- why Monte Carlo is flexible for complex payoffs
+- why Monte Carlo can be slow for precise vanilla prices
+
+Graph explanations:
+
+- path fan chart
+- terminal price distribution
+- convergence to Black-Scholes
+- absolute error / delta from closed form
+- confidence interval and standard error
+
+Acceptance criteria:
+
+- the page explains why averaging simulated payoffs gives a price
+- convergence charts explicitly discuss noise and sample size
+- the strengths and weaknesses of Monte Carlo are stated before PDE comparison
+
+### Milestone 9.6: Greeks as Practical Risk Measures
+
+Expand the Greeks page beyond calculation formulas into practical modelling and
+risk intuition.
+
+Topics:
+
+- Greeks as local sensitivities
+- delta as directional exposure and hedge ratio
+- gamma as delta instability
+- vega as volatility exposure
+- theta as time decay
+- rho as rate exposure
+- analytical Greeks versus finite-difference estimates
+- how Greeks are used for hedging, scenario analysis, and portfolio risk
+- limits of local sensitivities
+
+Graph explanations:
+
+- Greek curves over spot
+- Greek surfaces over spot and volatility
+- why gamma and vega concentrate near the strike
+- why call and put deltas differ while gamma and vega can match
+
+Acceptance criteria:
+
+- each Greek has both a formula-level and practice-level explanation
+- chart explanations discuss expected call/put behavior
+- the page clarifies that Greeks are local approximations, not full risk models
+
+### Milestone 9.7: PDE Solver Intuition, Schemes, and Error Sources
+
+Expand the PDE lab with numerical-method intuition.
+
+Topics:
+
+- why pricing PDEs appear from Black-Scholes
+- why finite differences solve on a grid over spot and time
+- terminal payoff as the starting condition
+- boundary conditions
+- explicit scheme
+- implicit scheme
+- Crank-Nicolson scheme
+- stability versus accuracy tradeoffs
+- where discretization error comes from
+- why the error is concentrated near the payoff kink
+- when PDE methods are preferred over Monte Carlo
+- when Monte Carlo is preferred over PDE methods
+
+Graph explanations:
+
+- option value surface
+- time value surface
+- final price curve
+- error curve
+- stability ratio
+
+Acceptance criteria:
+
+- explicit, implicit, and Crank-Nicolson schemes are explained at a high level
+- the error chart explanation mentions grid resolution, payoff kink, and boundaries
+- the PDE versus Monte Carlo comparison is practical and not purely theoretical
+
+## Milestone 10: Data Layer Foundation
 
 Prepare for market data without coupling to a provider.
 
@@ -351,7 +586,7 @@ Acceptance criteria:
 - provider implementations are swappable
 - no model code imports provider-specific APIs
 
-## Milestone 10: Scheduled Experiments
+## Milestone 11: Scheduled Experiments
 
 Add repeatable jobs once data exists.
 
