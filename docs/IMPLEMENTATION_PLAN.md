@@ -372,6 +372,8 @@ Acceptance criteria:
 
 ### Milestone 9.2: Random Variables, Processes, and Stochastic Calculus Primer
 
+Status: implemented.
+
 Add a concise mathematical primer for the probability tools used later.
 
 Topics:

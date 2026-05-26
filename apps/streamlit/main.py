@@ -8,6 +8,7 @@ from lab_pages import (
     greeks,
     monte_carlo_pricing,
     pde_solver,
+    probability_primer,
 )
 
 import streamlit as st
@@ -31,10 +32,11 @@ def render_intro() -> None:
         """
         1. Build a small domain vocabulary.
         2. Learn the basic option payoff and pricing vocabulary.
-        3. Implement Black-Scholes closed-form pricing.
-        4. Simulate geometric Brownian motion.
-        5. Compare Monte Carlo prices against the analytical result.
-        6. Add Greeks, hedging, and finite-difference solvers.
+        3. Introduce the probability tools behind stochastic models.
+        4. Implement Black-Scholes closed-form pricing.
+        5. Simulate geometric Brownian motion.
+        6. Compare Monte Carlo prices against the analytical result.
+        7. Add Greeks, hedging, and finite-difference solvers.
         """
     )
 
@@ -58,6 +60,7 @@ def main() -> None:
             options=[
                 "Introduction",
                 "Foundations",
+                "Probability Primer",
                 "Domain Model",
                 "Black-Scholes",
                 "GBM Simulation",
@@ -80,6 +83,8 @@ def main() -> None:
         black_scholes.render()
     elif page == "Domain Model":
         domain_model.render()
+    elif page == "Probability Primer":
+        probability_primer.render()
     elif page == "Foundations":
         foundations.render()
     else:

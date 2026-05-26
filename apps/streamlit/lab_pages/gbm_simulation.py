@@ -16,8 +16,9 @@ def render() -> None:
     st.markdown(
         """
         Geometric Brownian motion is the standard path model used in the
-        Black-Scholes world. It keeps prices positive by modeling proportional
-        returns instead of absolute price changes.
+        Black-Scholes world. The Probability Primer introduces the Brownian
+        motion shocks used here. GBM keeps prices positive by modeling
+        proportional returns instead of absolute price changes.
         """
     )
 

@@ -33,7 +33,8 @@ def render() -> None:
         simulation experiment. We simulate many possible terminal prices,
         evaluate the option payoff in each scenario, average those payoffs, and
         discount back to today. The Foundations page introduces the option
-        payoff vocabulary used here.
+        payoff vocabulary used here, and the Probability Primer introduces the
+        expectation and standard error ideas behind the estimate.
         """
     )
 
