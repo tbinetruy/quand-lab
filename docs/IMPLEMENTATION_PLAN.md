@@ -402,6 +402,8 @@ Acceptance criteria:
 
 ### Milestone 9.3: Geometric Brownian Motion Derivation and Interpretation
 
+Status: implemented.
+
 Expand the GBM lab into a derivation-driven page.
 
 Topics:
