@@ -301,6 +301,8 @@ Acceptance criteria:
 
 ## Milestone 8: Finite-Difference PDE Solver
 
+Status: implemented.
+
 Add a finite-difference PDE-based option pricing solver after the Black-Scholes and Monte Carlo base is stable.
 
 This is different from Milestone 7 finite-difference Greeks: here we discretize the Black-Scholes PDE over stock and time grids to compute option prices.
