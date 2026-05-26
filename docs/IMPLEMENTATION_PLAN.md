@@ -720,7 +720,479 @@ Acceptance criteria:
 - charts explain payoff, value, P&L, and Greek exposure at the portfolio level
 - the lab reuses existing pricing/risk modules instead of duplicating formulas
 
-## Milestone 11: Data Layer Foundation
+## Milestone 11: Formal Katas Track
+
+Build a second, deeper pass over the same material covered by the introductory
+lab. The current lab remains the introduction. The formal track assumes the
+reader has completed it, then rebuilds the underlying mathematics more
+carefully and with fewer hand-waves.
+
+The goal is not to become a graduate stochastic-calculus text. The goal is a
+middle path: more formal than practitioner treatments, less compressed than
+research notes, and still readable for a curious undergraduate with basic
+calculus, probability, and programming experience.
+
+Core principle:
+
+```text
+The intro lab motivates the need; the formal kata rebuilds the tool.
+```
+
+Every formal kata should start from a concrete place where the intro lab used a
+concept informally. For example, the Monte Carlo page used
+`E^Q[payoff]`; the formal probability and pricing-measure katas should explain
+what expectation, probability measures, and pricing measures actually mean.
+
+Outside examples are welcome when they clarify the mathematics. Finance should
+provide the spine, but analysis and numerical methods can use engineering
+examples such as finite differences, heat flow, stability of time stepping, or
+finite-element intuition when those examples make the idea easier to see.
+
+### Milestone 11.0: Formal Track Conventions
+
+Define the page style before adding content.
+
+The Streamlit sidebar should communicate the learning architecture instead of
+being a flat list of pages. The current Milestones 1-10 pages should sit under
+an introductory supersection such as:
+
+```text
+Quant Foundations: Introduction and Intuition
+```
+
+The formal katas should sit under a separate supersection such as:
+
+```text
+Formal Katas: Rebuilding the Machinery
+```
+
+Later data and applied projects can become their own supersections. The goal is
+that a reader can tell whether a page is an intuitive introduction, a formal
+rebuild, or an applied/data workflow before opening it.
+
+Each formal kata should use this structure where appropriate:
+
+```text
+Motivation From The Intro Lab
+Question
+Construction
+Definition
+Visual Intuition
+Proposition
+Proof Sketch
+Example
+Implementation Check
+What We Are Still Admitting
+```
+
+Conventions:
+
+- assume the reader has completed Milestones 1-10
+- formal katas are long-form course chapters, not short dashboard pages
+- define every symbol before using it
+- do not use a concept before it has been explained, unless the page explicitly
+  marks it as an admission or a forward reference
+- label theorem-like statements as definition, proposition, proof sketch, or
+  admission
+- keep a dependency chain between katas; if a page relies on a previous kata,
+  say so near the top
+- use inline visual arguments where helpful, not only experiment charts
+- use underbraces or diagrams for dense equations
+- make admissions explicit instead of hiding them behind "it can be shown"
+- keep implementation secondary: code verifies or illustrates the math rather
+  than driving the exposition
+- avoid full measure theory unless the page genuinely needs it; if mentioned,
+  mark it as a later formalization
+- introduce notation deliberately and keep it stable across pages
+- when notation changes context, for example `t` versus time-to-expiry `tau`,
+  state the conversion explicitly
+- repeat important definitions locally when the reader needs them, but link the
+  motivation back to the earlier kata
+- prefer one careful derivation over several compressed formulas
+- include non-finance examples when they make the mathematics clearer, while
+  keeping the finance motivation visible
+
+Acceptance criteria:
+
+- formal pages have a consistent structure
+- the sidebar groups pages into learning tracks rather than one flat list
+- every page starts with motivation from the existing intro lab
+- every page has a "What We Are Still Admitting" section when relevant
+- visual explanations are part of the text, not only the experiment panel
+- each formal kata has multiple internal subsections and enough detail to stand
+  as a course chapter
+
+Suggested internal subsection pattern:
+
+```text
+Motivation From The Intro Lab
+What We Need To Explain
+Prerequisites From Earlier Katas
+Definitions and Notation
+Construction
+Visual Argument
+Propositions and Proof Sketches
+Worked Examples
+Implementation Check
+Common Pitfalls
+What We Are Still Admitting
+Where This Will Be Used Next
+```
+
+### Milestone 11.1: Analysis and Approximation Kata
+
+Rebuild the calculus tools used throughout the introductory lab.
+
+Motivation from the intro lab:
+
+- Applied Risk used Taylor expansions for local P&L
+- Greeks used derivatives as sensitivities
+- PDE Solver used finite differences
+- Black-Scholes used local derivatives in Ito's lemma and the PDE
+
+Topics:
+
+- functions, limits, continuity, and local behavior
+- derivatives as best local linear approximations
+- Taylor expansion and error terms
+- first-order versus second-order approximations
+- convexity and curvature
+- finite differences as numerical derivatives
+- why local approximations break under large moves
+
+Visuals:
+
+- tangent line versus curve
+- Taylor approximation error
+- curvature and convexity diagrams
+- first- and second-difference stencils
+- local Greek approximation versus full repricing curve
+
+Acceptance criteria:
+
+- Taylor expansion used in Applied Risk is derived from local approximation
+- finite-difference stencils are motivated before PDE numerics
+- error terms are explained without excessive rigor
+
+### Milestone 11.2: Probability Foundations Kata
+
+Rebuild probability and expectation from the ground up.
+
+Motivation from the intro lab:
+
+- Monte Carlo averaged simulated payoffs
+- Black-Scholes and Monte Carlo used expected payoff notation
+- Probability Primer introduced random variables but not the deeper structure
+
+Topics:
+
+- outcomes, events, and probability assignments
+- random variables as functions from outcomes to values
+- distributions as the induced behavior of random variables
+- expectation as weighted average / integral
+- variance, covariance, and correlation
+- conditional expectation as an informed average
+- law of large numbers
+- central limit theorem as an admitted theorem with simulation evidence
+- standard error and why it scales like `1 / sqrt(N)`
+
+Visuals:
+
+- outcome space mapped into the real line
+- random variable inducing a distribution
+- sample average convergence
+- standard error shrinkage
+- histogram stabilization
+
+Acceptance criteria:
+
+- Monte Carlo averaging is connected to expectation and the law of large numbers
+- standard error formula is motivated clearly
+- conditional expectation is introduced only as far as later pricing needs it
+
+### Milestone 11.3: Stochastic Processes and Brownian Motion Kata
+
+Build the stochastic process used by GBM and Ito calculus.
+
+Motivation from the intro lab:
+
+- GBM used Brownian shocks
+- Stochastic Calculus used `dW_t^2 = dt`
+- Monte Carlo simulated paths, not just one random variable
+
+Topics:
+
+- stochastic processes as time-indexed random variables
+- independent increments
+- Gaussian increments
+- Brownian motion properties
+- why increments satisfy `W_{t+dt} - W_t ~ N(0, dt)`
+- scaling and typical move size `sqrt(dt)`
+- path continuity and nondifferentiability
+- quadratic variation
+- smooth path versus Brownian path
+
+Visuals:
+
+- random variable versus stochastic process
+- increment boxes over time
+- Brownian zoom roughness
+- quadratic variation convergence
+- smooth path compared with Brownian path
+
+Admissions:
+
+- existence of Brownian motion can be stated rather than fully constructed at
+  first
+
+Acceptance criteria:
+
+- Brownian scaling is clear before Ito calculus uses it
+- quadratic variation is motivated through accumulated squared increments
+- path roughness is shown visually
+
+### Milestone 11.4: Stochastic Calculus Kata
+
+Rebuild Ito calculus from the Brownian scaling rules.
+
+Motivation from the intro lab:
+
+- GBM used Ito's lemma to derive log-price dynamics
+- Black-Scholes used Ito's lemma on `V(t, S_t)`
+- the introductory stochastic calculus page stated the rules but did not fully
+  develop the construction
+
+Topics:
+
+- stochastic integrals as limits of adapted left-point sums
+- adapted processes and why future information is forbidden
+- Ito processes
+- multiplication table from accumulated scale
+- why `dt^2 = 0`, `dt dW_t = 0`, and `dW_t^2 = dt`
+- Ito's lemma from Taylor expansion
+- the Ito correction as curvature exposure to randomness
+- using Ito's lemma in reverse to evaluate stochastic integrals
+
+Visuals:
+
+- left-point stochastic sums
+- accumulated scale of `dt^2`, `dt dW_t`, and `dW_t^2`
+- ordinary chain rule versus Ito correction
+- curvature plus noise diagram
+
+Admissions:
+
+- rigorous construction of the Ito integral can be sketched, not fully proved
+
+Acceptance criteria:
+
+- Ito's lemma is derived from the previous Brownian and analysis katas
+- the new second-derivative term is unavoidable, not magic
+- the page prepares directly for GBM and Black-Scholes rebuilt pages
+
+### Milestone 11.5: Asset Modelling and GBM Kata
+
+Rebuild the stock-price model more formally.
+
+Motivation from the intro lab:
+
+- GBM Simulation used the exponential update
+- Black-Scholes assumed the same model
+- Monte Carlo simulated terminal prices from this process
+
+Topics:
+
+- additive versus multiplicative price models
+- simple returns versus log returns
+- proportional drift and proportional noise
+- GBM SDE:
+
+```text
+dS_t = mu S_t dt + sigma S_t dW_t
+```
+
+- applying Ito's lemma to `log(S_t)`
+- exact solution
+- terminal lognormal distribution
+- mean, median, and variance of terminal price
+- what GBM assumes and what it misses
+
+Visuals:
+
+- additive model crossing zero
+- compounding paths
+- log transform
+- terminal normal log-price versus lognormal price
+- mean versus median under lognormality
+
+Acceptance criteria:
+
+- the exponential simulator is derived rather than asserted
+- positivity and lognormality are proved at the introductory formal level
+- model limitations are explicit
+
+### Milestone 11.6: Pricing Measures and No-Arbitrage Kata
+
+Explain why pricing uses `Q` instead of the physical drift.
+
+Motivation from the intro lab:
+
+- GBM replaced `mu` with `r - q` for pricing
+- Black-Scholes and Monte Carlo used `E^Q`
+- Foundations introduced risk-neutral pricing only as a preview
+
+Topics:
+
+- physical measure `P` versus pricing measure `Q`
+- pricing is not forecasting
+- discounting deterministic cashflows
+- one-period no-arbitrage model
+- risk-neutral probabilities in a binomial tree
+- discounted tradable total-gain processes as martingales under `Q`
+- continuous dividend yield and why price drift becomes `r - q`
+- introductory change-of-measure intuition
+- Girsanov's theorem as the named continuous-time result
+
+Visuals:
+
+- one-period tree with physical probabilities
+- one-period tree with risk-neutral probabilities
+- discounted expected value diagram
+- drift swap from `P` to `Q`
+- stock plus dividend total-return sketch
+
+Admissions:
+
+- full measure-change machinery and Girsanov proof can be admitted initially
+
+Acceptance criteria:
+
+- `P`, `Q`, `E^Q`, and `r - q` are motivated before being reused
+- risk-neutral probability is presented as a pricing tool, not a belief about
+  the real world
+- no-arbitrage is shown first in a discrete model
+
+### Milestone 11.7: Black-Scholes Rebuilt Kata
+
+Rebuild the Black-Scholes PDE and closed form with stricter bookkeeping.
+
+Motivation from the intro lab:
+
+- Black-Scholes page derived the PDE and formula, but compressed some modelling
+  and self-financing details
+- PDE Solver and Greeks rely on the same PDE and derivatives
+
+Topics:
+
+- modelling assumptions
+- option value as `V(t, S_t)`
+- applying Ito's lemma step by step
+- self-financing portfolio
+- dividend cashflows
+- delta hedge and Brownian shock cancellation
+- locally riskless portfolio and no-arbitrage return
+- Black-Scholes PDE
+- risk-neutral expected payoff representation
+- closed-form call derivation
+- put formula
+- put-call parity
+- interpretation of `d1` and `d2`
+
+Visuals:
+
+- hedge portfolio diagram
+- Brownian `dW_t` cancellation
+- PDE term annotations
+- exercise region `S_T > K`
+- standard-normal threshold picture for `d2`
+- stock-weighted expectation intuition for `d1`
+
+Acceptance criteria:
+
+- all symbols are local and defined before use
+- the PDE derivation tracks dividend cashflows and self-financing assumptions
+- the closed form is connected to the risk-neutral terminal distribution
+
+### Milestone 11.8: Numerical Pricing Methods Kata
+
+Rebuild Monte Carlo and PDE numerics with more numerical-analysis structure.
+
+Motivation from the intro lab:
+
+- Monte Carlo showed convergence and standard error
+- PDE Solver showed grid error, stability, and kink effects
+- Applied Risk used full repricing versus local approximations
+
+Topics:
+
+- approximation error
+- bias versus variance
+- Monte Carlo estimator
+- standard error derivation
+- confidence intervals
+- finite-difference grids
+- consistency, stability, and convergence
+- explicit, implicit, and Crank-Nicolson schemes
+- boundary conditions
+- payoff kink and error concentration
+
+Visuals:
+
+- Monte Carlo convergence cloud
+- confidence interval shrinking
+- finite-difference grid and stencils
+- explicit stability failure
+- boundary truncation picture
+- error concentrated around the strike
+
+Admissions:
+
+- Lax equivalence can be named but not proved initially
+
+Acceptance criteria:
+
+- Monte Carlo error and PDE discretization error are clearly different
+- stability is shown visually before formal conditions
+- the PDE grid implementation is connected back to numerical analysis concepts
+
+### Milestone 11.9: Portfolio Risk Rebuilt Kata
+
+Formalize the applied risk workflow.
+
+Motivation from the intro lab:
+
+- Applied Risk aggregated option positions and Greeks
+- Greeks page described local sensitivities
+- Black-Scholes and Monte Carlo priced individual contracts
+
+Topics:
+
+- portfolio as a weighted sum of instruments
+- linearity of value
+- linearity of Greeks
+- multi-input Taylor approximation
+- local versus global risk
+- delta hedging
+- gamma risk and hedge drift
+- vega exposure
+- scenario repricing
+- where Greek approximations break
+
+Visuals:
+
+- payoff composition from individual legs
+- local tangent versus full reprice curve
+- delta hedge flattening first-order exposure
+- gamma reintroducing curvature
+- scenario surface over spot and volatility
+
+Acceptance criteria:
+
+- Greek aggregation is derived from linearity
+- local risk estimates are compared against full repricing
+- portfolio optimization is explicitly deferred to a later applied track
+
+## Milestone 12: Data Layer Foundation
 
 Prepare for market data without coupling to a provider.
 
@@ -745,7 +1217,7 @@ Acceptance criteria:
 - provider implementations are swappable
 - no model code imports provider-specific APIs
 
-## Milestone 12: Scheduled Experiments
+## Milestone 13: Scheduled Experiments
 
 Add repeatable jobs once data exists.
 
