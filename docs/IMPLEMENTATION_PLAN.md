@@ -675,7 +675,52 @@ Acceptance criteria:
 - the error chart explanation mentions grid resolution, payoff kink, and boundaries
 - the PDE versus Monte Carlo comparison is practical and not purely theoretical
 
-## Milestone 10: Data Layer Foundation
+## Milestone 10: Applied Option Risk Lab
+
+Status: implemented.
+
+Apply the previous sections to a small, realistic workflow. The first applied
+lab should stay self-contained and synthetic, so it can use the existing pricing,
+simulation, Greeks, and PDE tools before we add live market data.
+
+Initial direction:
+
+- build an option position or small option portfolio from calls, puts, and cash
+- price the position with Black-Scholes, Monte Carlo, and/or PDE methods where
+  appropriate
+- aggregate portfolio value and Greeks across positions
+- run spot, volatility, and time-to-expiry scenarios
+- show P&L curves and surfaces for the whole position
+- connect Greeks to practical hedging intuition
+- compare local Greek approximations with full repricing under larger moves
+
+Possible labs:
+
+- covered call
+- protective put
+- straddle / strangle
+- vertical spread
+- delta-hedged option position
+- simple portfolio stress test
+
+Learning goals:
+
+- understand how individual option prices combine into a portfolio
+- see why Greeks are useful as local risk summaries
+- see where local approximations break under large moves
+- understand the difference between pricing one contract and managing a
+  position over scenarios
+- prepare for later market-data experiments without needing external data yet
+
+Acceptance criteria:
+
+- portfolio positions are represented by typed, UI-agnostic engine objects
+- portfolio price and Greek aggregation are tested
+- Streamlit includes at least one applied strategy page
+- charts explain payoff, value, P&L, and Greek exposure at the portfolio level
+- the lab reuses existing pricing/risk modules instead of duplicating formulas
+
+## Milestone 11: Data Layer Foundation
 
 Prepare for market data without coupling to a provider.
 
@@ -700,7 +745,7 @@ Acceptance criteria:
 - provider implementations are swappable
 - no model code imports provider-specific APIs
 
-## Milestone 11: Scheduled Experiments
+## Milestone 12: Scheduled Experiments
 
 Add repeatable jobs once data exists.
 

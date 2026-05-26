@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from lab_pages import (
+    applied_risk,
     black_scholes,
     domain_model,
     foundations,
@@ -39,6 +40,7 @@ def render_intro() -> None:
         6. Implement Black-Scholes closed-form pricing.
         7. Compare Monte Carlo prices against the analytical result.
         8. Add Greeks, hedging, and finite-difference solvers.
+        9. Apply the tools to option strategies and portfolio risk.
         """
     )
 
@@ -70,11 +72,14 @@ def main() -> None:
                 "Monte Carlo Pricing",
                 "Greeks",
                 "PDE Solver",
+                "Applied Risk",
             ],
             label_visibility="collapsed",
         )
 
-    if page == "PDE Solver":
+    if page == "Applied Risk":
+        applied_risk.render()
+    elif page == "PDE Solver":
         pde_solver.render()
     elif page == "Greeks":
         greeks.render()

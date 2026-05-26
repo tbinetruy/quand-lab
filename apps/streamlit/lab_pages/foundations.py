@@ -50,6 +50,43 @@ def render() -> None:
             },
         ]
     )
+    st.markdown(
+        """
+        Market language usually shortens "buyer" and "seller" into long and
+        short:
+
+        - long an option: you bought the option, so you own its payoff
+        - short an option: you sold or wrote the option, so you owe its payoff
+
+        Long and short describe the sign of the position, not whether the
+        option is a call or a put. You can be long a call, short a call, long a
+        put, or short a put.
+        """
+    )
+    st.table(
+        [
+            {
+                "Position": "Long call",
+                "Meaning": "Bought a call",
+                "Payoff exposure": "Benefits from upside above K",
+            },
+            {
+                "Position": "Short call",
+                "Meaning": "Sold a call",
+                "Payoff exposure": "Owes upside above K",
+            },
+            {
+                "Position": "Long put",
+                "Meaning": "Bought a put",
+                "Payoff exposure": "Benefits from downside below K",
+            },
+            {
+                "Position": "Short put",
+                "Meaning": "Sold a put",
+                "Payoff exposure": "Owes downside below K",
+            },
+        ]
+    )
 
     st.subheader("Vocabulary")
     st.markdown(
