@@ -117,6 +117,36 @@ Acceptance criteria:
 - domain types are covered by simple tests
 - domain types are usable without any UI dependency
 
+## Milestone 2.5: Guided Streamlit Tutorial Shell
+
+Status: implemented.
+
+Turn the Streamlit frontend into a guided lab instead of a bare dashboard.
+
+Core pattern:
+
+```text
+Concept -> Math -> Implementation -> Experiment
+```
+
+Tasks:
+
+- add a project intro page
+- add a domain model tutorial page
+- add a reusable source-code excerpt helper
+- show curated snippets from the real engine implementation
+- explain why instruments, market state, configs, and results are separate objects
+- keep tutorial content concise and close to the implementation it describes
+- keep the Streamlit app outside the quant engine package
+
+Acceptance criteria:
+
+- Streamlit app has tutorial navigation
+- domain tutorial renders without pricing logic
+- source snippets are read from actual source files
+- `src/quant_lab` remains UI-agnostic
+- tests, linting, and Pyright pass
+
 ## Milestone 3: Black-Scholes Closed Form
 
 Implement analytical European call and put pricing.
