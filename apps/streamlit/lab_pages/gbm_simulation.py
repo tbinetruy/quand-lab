@@ -95,8 +95,6 @@ def render() -> None:
         $100$ to $110$ and later from $110$ to $121$, the simple returns are
         both $10\\%$, while the log returns add to the total log return from
         $100$ to $121$.
-
-        GBM assumes that log returns over a time step are normally distributed:
         """
     )
     st.table(
@@ -117,6 +115,80 @@ def render() -> None:
                 "Log return": "log(121 / 100)",
             },
         ]
+    )
+    st.markdown(
+        """
+        We get the log-price dynamics by applying Ito's lemma to
+        $f(S)=\\log S$.
+        """
+    )
+    st.markdown(
+        """
+        GBM has $a_t=\\mu S_t$ and $b_t=\\sigma S_t$:
+        """
+    )
+    st.markdown(r"$$dS_t=\mu S_t\,dt+\sigma S_t\,dW_t$$")
+    st.markdown(
+        """
+        Start with the full one-dimensional Ito lemma:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"df(t,X_t)=\left("
+        r"\frac{\partial f}{\partial t}"
+        r"+a_t\frac{\partial f}{\partial x}"
+        r"+\frac{1}{2}b_t^2\frac{\partial^2f}{\partial x^2}"
+        r"\right)dt"
+        r"+b_t\frac{\partial f}{\partial x}dW_t"
+        "$$"
+    )
+    st.markdown(
+        """
+        Here the process is $X_t=S_t$, so $a_t=\\mu S_t$ and
+        $b_t=\\sigma S_t$. The function is $f(t,S)=\\log S$. It has no direct
+        time dependence, so:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"\frac{\partial f}{\partial t}=0,\qquad "
+        r"\frac{\partial f}{\partial S}=\frac{1}{S},\qquad "
+        r"\frac{\partial^2 f}{\partial S^2}=-\frac{1}{S^2}"
+        "$$"
+    )
+    st.markdown(
+        """
+        Substitute those pieces into Ito's lemma:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"d\log S_t="
+        r"\left("
+        r"0+\mu S_t\frac{1}{S_t}"
+        r"+\frac{1}{2}\sigma^2S_t^2\left(-\frac{1}{S_t^2}\right)"
+        r"\right)dt"
+        r"+\sigma S_t\frac{1}{S_t}dW_t"
+        "$$"
+    )
+    st.markdown(
+        """
+        Simplify:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"d\log S_t="
+        r"\left(\mu-\frac{1}{2}\sigma^2\right)dt+\sigma\,dW_t"
+        "$$"
+    )
+    st.markdown(
+        """
+        Now integrate over one time step. Brownian increments satisfy
+        $W_{t+\\Delta t}-W_t=\\sqrt{\\Delta t}Z$, where
+        $Z\\sim\\mathcal{N}(0,1)$:
+        """
     )
     st.markdown(
         "$$"
@@ -160,17 +232,43 @@ def render() -> None:
         """
         The $-\\frac{1}{2}\\sigma^2$ term is the stochastic-calculus correction
         that makes the log-price equation consistent with the proportional-price
-        equation. A later Black-Scholes derivation will introduce Ito's lemma,
-        which is the formal rule behind this correction. For now, the important
-        practical point is that the simulator evolves log returns and then
-        exponentiates them back into prices.
+        equation.
         """
     )
+
+    st.subheader("Application: Risk-Neutral Drift")
     st.markdown(
         """
-        In the pricing labs we usually simulate under the risk-neutral model,
-        where the drift is $r-q$ instead of an estimated real-world return
-        $\\mu$:
+        The derivation above used a generic drift $\\mu$. That is the
+        real-world, or physical, expected return. It is useful for forecasting
+        scenarios, but derivative pricing usually uses a different drift.
+
+        Under the risk-neutral pricing measure, a tradable asset's expected
+        total return is the risk-free rate $r$. For a stock paying continuous
+        dividend yield $q$, total return has two parts:
+        """
+    )
+    st.markdown(r"$$\text{total return}=\text{price growth}+q$$")
+    st.markdown(
+        """
+        Setting risk-neutral expected total return equal to $r$ gives:
+        """
+    )
+    st.markdown(r"$$\text{risk-neutral price growth}+q=r$$")
+    st.markdown(r"$$\text{risk-neutral price growth}=r-q$$")
+    st.markdown(
+        """
+        So for pricing simulations we apply the GBM result with $\\mu$ replaced
+        by $r-q$:
+        """
+    )
+    st.markdown(r"$$dS_t=(r-q)S_t\,dt+\sigma S_t\,dW_t^Q$$")
+    st.markdown(
+        """
+        The superscript $Q$ reminds us that the Brownian motion belongs to the
+        risk-neutral pricing measure, not the real-world forecasting measure.
+        The exact one-step simulator becomes:
+
         """
     )
     st.markdown(

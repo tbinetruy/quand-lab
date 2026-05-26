@@ -459,7 +459,7 @@ Acceptance criteria:
 
 ### Milestone 9.4: Geometric Brownian Motion Derivation and Interpretation
 
-Status: partially implemented. Needs a deeper derivation after Milestone 9.3.
+Status: implemented.
 
 Expand the GBM lab into a derivation-driven page.
 
@@ -499,7 +499,48 @@ Acceptance criteria:
 - chart captions explain what should change when parameters move
 - limitations are stated without derailing the introductory flow
 
-### Milestone 9.5: Black-Scholes Derivation and Closed-Form Intuition
+### Milestone 9.5: Probability Measures and Risk-Neutral Pricing
+
+Add a dedicated learning section for real-world versus pricing probabilities.
+
+This should come before the full Black-Scholes derivation, because the
+Black-Scholes formula and Monte Carlo pricing both rely on expectations under
+the risk-neutral measure.
+
+Topics:
+
+- probability measures as probability assignments over possible future paths
+- physical / real-world measure `P`
+- risk-neutral / pricing measure `Q`
+- expectation notation:
+
+```text
+E^P[X], E^Q[X]
+```
+
+- why `Q` is not just notation
+- discounted tradable total-gain processes as martingales under `Q`
+- non-dividend stock drift under `Q`
+- continuous dividend yield and why stock price drift becomes `r - q`
+- same volatility, different Brownian motion:
+
+```text
+dS_t = \mu S_t dt + \sigma S_t dW_t^P
+dS_t = (r-q) S_t dt + \sigma S_t dW_t^Q
+```
+
+- market price of risk intuition
+- introductory change-of-measure idea
+- Girsanov's theorem as the formal result, without requiring full proof
+
+Acceptance criteria:
+
+- `P`, `Q`, and `E^Q` are defined before being used in pricing pages
+- the difference between forecasting and pricing is explicit
+- `r - q` is derived from risk-neutral total return, not asserted
+- the page prepares the reader for Black-Scholes and Monte Carlo pricing
+
+### Milestone 9.6: Black-Scholes Derivation and Closed-Form Intuition
 
 Status: partially implemented. Needs a deeper derivation after Milestone 9.3.
 
@@ -531,7 +572,7 @@ Acceptance criteria:
 - the closed-form formula is connected back to the implementation
 - the graphs explain expected shapes and parameter sensitivities
 
-### Milestone 9.6: Monte Carlo Pricing Intuition and Convergence
+### Milestone 9.7: Monte Carlo Pricing Intuition and Convergence
 
 Expand the Monte Carlo lab with the probability argument behind pricing by
 simulation.
@@ -565,7 +606,7 @@ Acceptance criteria:
 - convergence charts explicitly discuss noise and sample size
 - the strengths and weaknesses of Monte Carlo are stated before PDE comparison
 
-### Milestone 9.7: Greeks as Practical Risk Measures
+### Milestone 9.8: Greeks as Practical Risk Measures
 
 Expand the Greeks page beyond calculation formulas into practical modelling and
 risk intuition.
@@ -595,7 +636,7 @@ Acceptance criteria:
 - chart explanations discuss expected call/put behavior
 - the page clarifies that Greeks are local approximations, not full risk models
 
-### Milestone 9.8: PDE Solver Intuition, Schemes, and Error Sources
+### Milestone 9.9: PDE Solver Intuition, Schemes, and Error Sources
 
 Expand the PDE lab with numerical-method intuition.
 
