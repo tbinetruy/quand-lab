@@ -92,6 +92,8 @@ Acceptance criteria:
 
 ## Milestone 2: Domain Model
 
+Status: implemented.
+
 Implement small immutable typed domain objects.
 
 Core types:
