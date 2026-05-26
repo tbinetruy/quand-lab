@@ -2,6 +2,15 @@ from __future__ import annotations
 
 from math import exp
 
+from components.charts import (
+    ChartRow,
+    linspace,
+    payoff_chart_spec,
+    payoff_rows,
+    surface_chart_spec,
+    surface_value_max,
+    surface_value_min,
+)
 from components.source import show_source_file
 
 import streamlit as st
@@ -60,12 +69,14 @@ def render() -> None:
     left, right = st.columns(2)
 
     with left:
-        option_type = st.segmented_control(
+        selected_option_type = st.segmented_control(
             "Option type",
-            options=[OptionType.CALL, OptionType.PUT],
-            format_func=lambda value: value.value.title(),
-            default=OptionType.CALL,
+            options=["call", "put"],
+            format_func=lambda value: value.title(),
+            default="call",
+            key="black_scholes_option_type",
         )
+        option_type = OptionType(selected_option_type or "call")
         strike = st.number_input("Strike", min_value=0.01, value=100.0, step=1.0)
         maturity = st.number_input("Maturity in years", min_value=0.0, value=1.0, step=0.25)
 
@@ -75,9 +86,8 @@ def render() -> None:
         dividend_yield = st.number_input("Dividend yield", value=0.0, step=0.01, format="%.4f")
         volatility = st.number_input("Volatility", min_value=0.0, value=0.2, step=0.05)
 
-    selected_option_type = option_type or OptionType.CALL
     option = EuropeanOption(
-        option_type=selected_option_type,
+        option_type=option_type,
         strike=strike,
         maturity_years=maturity,
     )
@@ -107,3 +117,58 @@ def render() -> None:
         }
     )
 
+    st.markdown("Payoff diagram:")
+    payoff_spots = linspace(max(0.01, strike * 0.5), strike * 1.5, 80)
+    st.vega_lite_chart(
+        payoff_rows(
+            option_type=option_type,
+            payoff_spots=payoff_spots,
+            strike=strike,
+            maturity=maturity,
+        ),
+        payoff_chart_spec(),
+        key=f"black-scholes-payoff-{option_type.value}",
+        use_container_width=True,
+    )
+
+    st.markdown("Closed-form price surface over spot and volatility:")
+    surface_rows = _closed_form_surface_rows(option, market)
+    st.vega_lite_chart(
+        surface_rows,
+        surface_chart_spec(
+            value_title="Closed-form price",
+            value_min=surface_value_min(surface_rows),
+            value_max=surface_value_max(surface_rows),
+        ),
+        key=f"black-scholes-surface-{option_type.value}",
+        use_container_width=True,
+    )
+
+
+def _closed_form_surface_rows(
+    option: EuropeanOption,
+    market: BlackScholesMarket,
+) -> list[ChartRow]:
+    spot_min = max(0.01, market.spot * 0.6)
+    spot_max = market.spot * 1.4
+    volatility_max = max(0.6, market.volatility * 2.0, 0.1)
+
+    rows: list[ChartRow] = []
+    for surface_spot in linspace(spot_min, spot_max, 18):
+        for surface_volatility in linspace(0.01, volatility_max, 18):
+            surface_market = BlackScholesMarket(
+                spot=surface_spot,
+                rate=market.rate,
+                volatility=surface_volatility,
+                dividend_yield=market.dividend_yield,
+            )
+            rows.append(
+                {
+                    "spot": round(surface_spot, 2),
+                    "volatility": round(surface_volatility, 3),
+                    "price": round(black_scholes_price(option, surface_market), 6),
+                    "option_type": option.option_type.value.title(),
+                }
+            )
+
+    return rows

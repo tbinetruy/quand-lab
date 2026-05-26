@@ -20,8 +20,9 @@ class EuropeanOption:
     maturity_years: float
 
     def __post_init__(self) -> None:
+        object.__setattr__(self, "option_type", OptionType(self.option_type))
+
         if self.strike <= 0.0:
             raise ValueError("strike must be positive")
         if self.maturity_years < 0.0:
             raise ValueError("maturity_years must be non-negative")
-

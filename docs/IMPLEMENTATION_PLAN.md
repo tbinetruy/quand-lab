@@ -243,6 +243,8 @@ Acceptance criteria:
 
 ## Milestone 6: Streamlit Black-Scholes Lab
 
+Status: implemented.
+
 Build the first interactive UI page.
 
 Controls:

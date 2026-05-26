@@ -28,6 +28,16 @@ def test_european_option_is_immutable() -> None:
         setattr(option, "strike", 101.0)  # noqa: B010
 
 
+def test_european_option_normalizes_option_type_value() -> None:
+    option = EuropeanOption(
+        option_type=OptionType("put"),
+        strike=100.0,
+        maturity_years=1.0,
+    )
+
+    assert option.option_type is OptionType.PUT
+
+
 @pytest.mark.parametrize("strike", [0.0, -1.0])
 def test_european_option_rejects_non_positive_strike(strike: float) -> None:
     with pytest.raises(ValueError, match="strike must be positive"):

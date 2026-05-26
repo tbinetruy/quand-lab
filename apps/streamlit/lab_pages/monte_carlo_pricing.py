@@ -1,9 +1,25 @@
 from __future__ import annotations
 
+from components.charts import (
+    ChartRow,
+    line_chart_spec,
+    linspace,
+    padded_range,
+    payoff_chart_spec,
+    payoff_rows,
+    surface_chart_spec,
+    surface_value_max,
+    surface_value_min,
+)
 from components.source import show_source_file
 
 import streamlit as st
-from quant_lab.domain import BlackScholesMarket, EuropeanOption, MonteCarloConfig, OptionType
+from quant_lab.domain import (
+    BlackScholesMarket,
+    EuropeanOption,
+    MonteCarloConfig,
+    OptionType,
+)
 from quant_lab.pricing import black_scholes_price, monte_carlo_price
 
 
@@ -64,11 +80,12 @@ def render() -> None:
     with left:
         selected_option_type = st.segmented_control(
             "Option type",
-            options=[OptionType.CALL, OptionType.PUT],
-            format_func=lambda value: value.value.title(),
-            default=OptionType.CALL,
+            options=["call", "put"],
+            format_func=lambda value: value.title(),
+            default="call",
+            key="monte_carlo_option_type",
         )
-        option_type = selected_option_type or OptionType.CALL
+        option_type = OptionType(selected_option_type or "call")
         strike = st.number_input("Strike", min_value=0.01, value=100.0, step=1.0)
         maturity = st.number_input("Maturity in years", min_value=0.0, value=1.0, step=0.25)
         spot = st.number_input("Spot", min_value=0.01, value=100.0, step=1.0)
@@ -128,6 +145,39 @@ def render() -> None:
         sample_path_count = min(25, n_paths)
         st.line_chart(result.paths[:sample_path_count].T)
 
+    st.markdown("Terminal price distribution:")
+    st.caption("This is the distribution of simulated terminal prices $S_T$ across paths.")
+    st.vega_lite_chart(
+        [{"terminal_price": float(value)} for value in result.terminal_prices],
+        {
+            "mark": "bar",
+            "encoding": {
+                "x": {
+                    "field": "terminal_price",
+                    "bin": {"maxbins": 60},
+                    "type": "quantitative",
+                    "title": "Terminal price",
+                },
+                "y": {"aggregate": "count", "type": "quantitative", "title": "Paths"},
+            },
+        },
+        use_container_width=True,
+    )
+
+    st.markdown("Payoff diagram:")
+    payoff_spots = linspace(max(0.01, strike * 0.5), strike * 1.5, 80)
+    st.vega_lite_chart(
+        payoff_rows(
+            option_type=option_type,
+            payoff_spots=payoff_spots,
+            strike=strike,
+            maturity=maturity,
+        ),
+        payoff_chart_spec(),
+        key=f"monte-carlo-payoff-{option_type.value}",
+        use_container_width=True,
+    )
+
     st.markdown("Convergence against Black-Scholes:")
     convergence_counts = _convergence_counts(n_paths)
     convergence_prices = [
@@ -164,10 +214,12 @@ def render() -> None:
         }
         for path_count in convergence_counts
     )
-    price_y_min, price_y_max = _padded_range([*convergence_prices, analytical_price])
+    price_y_min, price_y_max = padded_range([*convergence_prices, analytical_price])
     st.vega_lite_chart(
         convergence_rows,
-        _line_chart_spec(
+        line_chart_spec(
+            x_field="paths",
+            x_title="Paths",
             y_field="price",
             y_title="Price",
             y_min=price_y_min,
@@ -178,7 +230,7 @@ def render() -> None:
 
     st.markdown("Pricing error:")
     pricing_errors = [price - analytical_price for price in convergence_prices]
-    error_y_min, error_y_max = _padded_range([*pricing_errors, 0.0])
+    error_y_min, error_y_max = padded_range([*pricing_errors, 0.0])
     st.vega_lite_chart(
         [
             {
@@ -192,7 +244,9 @@ def render() -> None:
                 strict=True,
             )
         ],
-        _line_chart_spec(
+        line_chart_spec(
+            x_field="paths",
+            x_title="Paths",
             y_field="error",
             y_title="Monte Carlo - Black-Scholes",
             y_min=error_y_min,
@@ -201,6 +255,30 @@ def render() -> None:
         use_container_width=True,
     )
     st.caption("Convergence points use increasing path counts from the selected seed.")
+
+    st.markdown("Monte Carlo price surface over spot and volatility:")
+    surface_path_count = min(5_000, max(500, n_paths // 10))
+    st.caption(
+        f"Surface uses {surface_path_count:,} paths per grid point to keep the page responsive."
+    )
+    surface_rows = _monte_carlo_surface_rows(
+        option=option,
+        market=market,
+        n_steps=n_steps,
+        seed=seed,
+        antithetic=antithetic,
+        n_paths=surface_path_count,
+    )
+    st.vega_lite_chart(
+        surface_rows,
+        surface_chart_spec(
+            value_title="Monte Carlo price",
+            value_min=surface_value_min(surface_rows),
+            value_max=surface_value_max(surface_rows),
+        ),
+        key=f"monte-carlo-surface-{option_type.value}",
+        use_container_width=True,
+    )
 
 
 def _convergence_counts(max_path_count: int) -> list[int]:
@@ -213,36 +291,43 @@ def _convergence_counts(max_path_count: int) -> list[int]:
     return [*counts, max_path_count]
 
 
-def _padded_range(values: list[float]) -> tuple[float, float]:
-    lower_bound = min(values)
-    upper_bound = max(values)
-    span = upper_bound - lower_bound
-
-    if span == 0.0:
-        padding = max(abs(lower_bound) * 0.05, 1.0)
-    else:
-        padding = span * 0.1
-
-    return lower_bound - padding, upper_bound + padding
-
-
-def _line_chart_spec(
+def _monte_carlo_surface_rows(
     *,
-    y_field: str,
-    y_title: str,
-    y_min: float,
-    y_max: float,
-) -> dict[str, object]:
-    return {
-        "mark": {"type": "line", "point": True},
-        "encoding": {
-            "x": {"field": "paths", "type": "quantitative", "title": "Paths"},
-            "y": {
-                "field": y_field,
-                "type": "quantitative",
-                "title": y_title,
-                "scale": {"domain": [y_min, y_max], "zero": False},
-            },
-            "color": {"field": "series", "type": "nominal", "title": ""},
-        },
-    }
+    option: EuropeanOption,
+    market: BlackScholesMarket,
+    n_paths: int,
+    n_steps: int,
+    seed: int,
+    antithetic: bool,
+) -> list[ChartRow]:
+    spot_min = max(0.01, market.spot * 0.6)
+    spot_max = market.spot * 1.4
+    volatility_max = max(0.6, market.volatility * 2.0, 0.1)
+
+    rows: list[ChartRow] = []
+    for surface_spot in linspace(spot_min, spot_max, 9):
+        for surface_volatility in linspace(0.01, volatility_max, 9):
+            surface_market = BlackScholesMarket(
+                spot=surface_spot,
+                rate=market.rate,
+                volatility=surface_volatility,
+                dividend_yield=market.dividend_yield,
+            )
+            surface_config = MonteCarloConfig(
+                n_paths=n_paths,
+                n_steps=n_steps,
+                seed=seed,
+                antithetic=antithetic,
+                return_paths=False,
+            )
+            surface_price = monte_carlo_price(option, surface_market, surface_config).price
+            rows.append(
+                {
+                    "spot": round(surface_spot, 2),
+                    "volatility": round(surface_volatility, 3),
+                    "price": round(surface_price, 6),
+                    "option_type": option.option_type.value.title(),
+                }
+            )
+
+    return rows

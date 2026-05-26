@@ -78,11 +78,12 @@ def render() -> None:
     with left:
         selected_option_type = st.segmented_control(
             "Option type",
-            options=[OptionType.CALL, OptionType.PUT],
-            format_func=lambda value: value.value.title(),
-            default=OptionType.CALL,
+            options=["call", "put"],
+            format_func=lambda value: value.title(),
+            default="call",
+            key="domain_model_option_type",
         )
-        option_type = selected_option_type or OptionType.CALL
+        option_type = OptionType(selected_option_type or "call")
         strike = st.number_input("Strike", min_value=0.01, value=100.0, step=1.0)
         maturity = st.number_input(
             "Maturity in years",
@@ -132,4 +133,3 @@ def render() -> None:
             },
         }
     )
-
