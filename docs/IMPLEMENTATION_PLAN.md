@@ -399,6 +399,8 @@ Acceptance criteria:
 
 ### Milestone 9.3: Stochastic Calculus Primer
 
+Status: implemented.
+
 Add a dedicated stochastic calculus page before the deeper GBM and Black-Scholes
 derivations.
 
@@ -426,7 +428,8 @@ Topics:
 dX_t = a_t dt + b_t dW_t
 ```
 
-- multiplication rules:
+- finite-step accumulation argument for why order `dt` terms survive
+- multiplication rules derived from accumulated scale:
 
 ```text
 dt^2 = 0
@@ -435,12 +438,13 @@ dW_t^2 = dt
 ```
 
 - Ito's lemma in one dimension
-- applying Ito's lemma to `log(S_t)` as preparation for GBM
-- applying Ito's lemma to `V(S,t)` as preparation for Black-Scholes
+- how Ito's lemma differs from the ordinary chain rule
+- the Ito correction as curvature exposure to Brownian variance
+- using Ito's lemma in reverse to evaluate stochastic integrals
 
 Visual explanations:
 
-- Brownian path roughness versus smooth path intuition
+- Brownian path roughness versus a smooth log path
 - quadratic variation convergence
 - simple stochastic integral accumulation
 - comparison between ordinary chain rule and Ito correction
@@ -448,7 +452,8 @@ Visual explanations:
 Acceptance criteria:
 
 - stochastic integral notation is introduced before Ito's lemma
-- `dW_t^2 = dt` is explained through quadratic variation, not hand-waved
+- `dt^2 = 0`, `dt dW_t = 0`, and `dW_t^2 = dt` are explained through
+  accumulated scale, not hand-waved
 - Ito's lemma is stated clearly with symbols defined locally
 - the page prepares the reader for full GBM and Black-Scholes derivations
 

@@ -19,8 +19,10 @@ def render() -> None:
         """
         Geometric Brownian motion is the standard path model used in the
         Black-Scholes world. The Probability Primer introduces the Brownian
-        motion shocks used here. GBM keeps prices positive by modeling
-        proportional returns instead of absolute price changes.
+        motion shocks used here, and the Stochastic Calculus page introduces
+        the Ito correction used in the log-price derivation. GBM keeps prices
+        positive by modeling proportional returns instead of absolute price
+        changes.
         """
     )
 
@@ -65,6 +67,20 @@ def render() -> None:
     )
     st.markdown(r"$$\frac{dS_t}{S_t}=\mu\,dt+\sigma\,dW_t$$")
     st.markdown(r"$$dS_t=\mu S_t\,dt+\sigma S_t\,dW_t$$")
+    st.markdown(
+        """
+        The Brownian increment has mean zero, so the random shock does not add
+        directional drift on average. Conditional on today's price, the expected
+        proportional change over a tiny time step is:
+        """
+    )
+    st.markdown(r"$$\operatorname{E}\left[\frac{dS_t}{S_t}\right]=\mu\,dt$$")
+    st.markdown(
+        """
+        Over a finite horizon, this gives the expected terminal price:
+        """
+    )
+    st.markdown(r"$$\operatorname{E}[S_T]=S_0e^{\mu T}$$")
     st.markdown(
         """
         This is the continuous-time shorthand for geometric Brownian motion.
