@@ -121,7 +121,7 @@ def render() -> None:
         - $\\Delta$: sensitivity to spot
         - $\\Gamma$: sensitivity of delta to spot
         - $\\nu$: sensitivity to volatility, commonly called vega
-        - $\\Theta$: sensitivity to time passing
+        - $\\Theta$: sensitivity to calendar time passing
         - $\\rho$: sensitivity to the risk-free rate
         """
     )
@@ -134,6 +134,11 @@ def render() -> None:
     st.markdown(r"$$\rho = \frac{\partial V}{\partial r}$$")
     st.markdown(
         """
+        Theta uses calendar time $t$. If one day passes while the expiry date is
+        fixed, time-to-expiry falls. This is why theta is often negative for
+        long vanilla options even though more time-to-expiry usually increases
+        option value.
+
         Analytical Greeks differentiate the Black-Scholes formula directly.
         Finite-difference Greeks bump an input, reprice the option, and estimate
         the derivative numerically. Comparing both is a good implementation

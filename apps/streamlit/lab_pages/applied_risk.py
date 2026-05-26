@@ -111,7 +111,11 @@ def render() -> None:
         """
     )
     st.markdown(r"$$\Delta_\Pi=\sum_j w_j\Delta_j,\qquad \Gamma_\Pi=\sum_j w_j\Gamma_j$$")
-    st.markdown(r"$$\nu_\Pi=\sum_j w_j\nu_j,\qquad \Theta_\Pi=\sum_j w_j\Theta_j$$")
+    st.markdown(
+        r"$$\nu_\Pi=\sum_j w_j\nu_j,\qquad "
+        r"\Theta_\Pi=\sum_j w_j\Theta_j,\qquad "
+        r"\rho_\Pi=\sum_j w_j\rho_j$$"
+    )
     st.markdown(
         """
         The local P&L estimate comes from the same Taylor expansion used in
@@ -165,7 +169,7 @@ def render() -> None:
     st.markdown(
         """
         The portfolio value is not only a function of spot. It also depends on
-        volatility, time, and rates:
+        volatility, calendar time, and rates:
         """
     )
     st.markdown(r"$$\Pi=\Pi(S,\sigma,t,r)$$")
@@ -191,10 +195,11 @@ def render() -> None:
     )
     st.markdown(
         """
-        This is still a local approximation. It is useful for small shocks and
-        quick risk summaries. For larger shocks, the experiment below also does
-        full repricing so we can see where the local approximation starts to
-        drift away.
+        Here $\\Delta t$ means calendar time passing, not maturity increasing.
+        This is still a local approximation: useful for small shocks and quick
+        risk summaries. For larger shocks, the experiment below also does full
+        repricing so we can see where the local approximation starts to drift
+        away.
         """
     )
 
@@ -272,7 +277,9 @@ def render() -> None:
         The payoff line is the cashflow at maturity. The P&L line subtracts
         the future value of today's portfolio cost, so it answers a more useful
         question: did this strategy beat simply carrying its initial value at
-        the risk-free rate?
+        the risk-free rate? In this first version, stock dividends are not added
+        to the terminal payoff line; the dividend yield still affects option
+        prices through Black-Scholes.
         """
     )
     st.vega_lite_chart(

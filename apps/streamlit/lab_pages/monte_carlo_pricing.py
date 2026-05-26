@@ -74,7 +74,7 @@ def render() -> None:
         payoff:
         """
     )
-    st.markdown(r"$$V_0 = e^{-rT} E^Q[\Phi(S_T)]$$")
+    st.markdown(r"$$V_0 = e^{-rT}\mathbb{E}^{Q}[\Phi(S_T)]$$")
     st.markdown(
         """
         A simulation replaces the expectation with a sample average. First draw
@@ -114,7 +114,7 @@ def render() -> None:
         \sum_{i=1}^{N}
         \Phi(S_T^{(i)})
         \longrightarrow
-        E^Q[\Phi(S_T)]
+        \mathbb{E}^{Q}[\Phi(S_T)]
         $$
         """
     )

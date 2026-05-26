@@ -252,7 +252,7 @@ def render() -> None:
         payoff under the pricing measure $Q$. Therefore:
         """
     )
-    st.markdown(r"$$C=e^{-rT}\operatorname{E}^Q[(S_T-K)^+]$$")
+    st.markdown(r"$$C=e^{-rT}\mathbb{E}^{Q}[(S_T-K)^+]$$")
     st.markdown(
         """
         Split the payoff into two pieces: receive the stock if exercise happens,
@@ -271,11 +271,11 @@ def render() -> None:
         expectation is the probability of the event:
         """
     )
-    st.markdown(r"$$\operatorname{E}^Q[\mathbf{1}_{S_T>K}]=Q(S_T>K)$$")
+    st.markdown(r"$$\mathbb{E}^{Q}[\mathbf{1}_{S_T>K}]=Q(S_T>K)$$")
     st.markdown(
         "$$"
         r"C=e^{-rT}\left("
-        r"\operatorname{E}^Q[S_T\mathbf{1}_{S_T>K}]"
+        r"\mathbb{E}^{Q}[S_T\mathbf{1}_{S_T>K}]"
         r"-KQ(S_T>K)"
         r"\right)"
         "$$"
@@ -365,7 +365,7 @@ def render() -> None:
     )
     st.markdown("Then the discounted stock-weighted term becomes:")
     st.markdown(
-        r"$$e^{-rT}\operatorname{E}^Q[S_T\mathbf{1}_{S_T>K}]"
+        r"$$e^{-rT}\mathbb{E}^{Q}[S_T\mathbf{1}_{S_T>K}]"
         r"=S_0e^{-qT}N(d_1)$$"
     )
     st.markdown("Putting the stock and strike pieces together gives the call formula:")
@@ -386,7 +386,7 @@ def render() -> None:
     st.markdown(
         "$$"
         r"P=e^{-rT}\left("
-        r"KQ(S_T<K)-\operatorname{E}^Q[S_T\mathbf{1}_{S_T<K}]"
+        r"KQ(S_T<K)-\mathbb{E}^{Q}[S_T\mathbf{1}_{S_T<K}]"
         r"\right)"
         "$$"
     )
