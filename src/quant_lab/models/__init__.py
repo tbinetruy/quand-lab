@@ -1,0 +1,2 @@
+"""Quantitative finance model implementations."""
+

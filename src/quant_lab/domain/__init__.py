@@ -1,0 +1,2 @@
+"""Core financial domain objects."""
+

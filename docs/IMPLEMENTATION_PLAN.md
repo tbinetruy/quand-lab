@@ -62,6 +62,8 @@ This shape can evolve, but the key constraint should remain: `src/quant_lab` mus
 
 ## Milestone 1: Project Skeleton
 
+Status: implemented.
+
 Create the base Python project.
 
 Tasks:
@@ -345,4 +347,3 @@ Acceptance criteria:
 - decide whether visualization helpers belong inside `src/quant_lab/visualization` or inside app-specific code
 - decide whether to introduce Django only after market data experiments become useful
 - decide whether persistence should start with SQLite, Postgres, DuckDB, or Parquet
-
