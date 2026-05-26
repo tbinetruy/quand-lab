@@ -370,7 +370,7 @@ Acceptance criteria:
 - call and put payoff diagrams are explained in plain language
 - the Black-Scholes and Monte Carlo pages can link back to this vocabulary
 
-### Milestone 9.2: Random Variables, Processes, and Stochastic Calculus Primer
+### Milestone 9.2: Random Variables and Processes Primer
 
 Status: implemented.
 
@@ -384,14 +384,11 @@ Topics:
 - Brownian motion intuition
 - independent increments and normally distributed increments
 - drift and volatility
-- stochastic differential notation
-- Ito intuition and the special role of quadratic variation
 
 Example equations:
 
 ```text
 W_{t+\Delta t} - W_t ~ N(0, \Delta t)
-dW_t^2 = dt
 ```
 
 Acceptance criteria:
@@ -400,9 +397,64 @@ Acceptance criteria:
 - equations are accompanied by practical interpretation
 - GBM, Monte Carlo, and Black-Scholes pages can refer back to this primer
 
-### Milestone 9.3: Geometric Brownian Motion Derivation and Interpretation
+### Milestone 9.3: Stochastic Calculus Primer
 
-Status: implemented.
+Add a dedicated stochastic calculus page before the deeper GBM and Black-Scholes
+derivations.
+
+This page should be more formal than the probability primer, but still
+introductory and visual. Its job is to make stochastic integrals, Ito processes,
+quadratic variation, and Ito's lemma feel usable before they appear in pricing
+derivations.
+
+Topics:
+
+- why ordinary calculus intuition breaks for Brownian paths
+- finite variation versus quadratic variation
+- stochastic integrals as limits of sums:
+
+```text
+\int_0^T H_t\,dW_t
+```
+
+- integrands as adaptive processes: `H_t` can depend on information known by
+  time `t`
+- martingale intuition for stochastic integrals with respect to Brownian motion
+- Ito process notation:
+
+```text
+dX_t = a_t dt + b_t dW_t
+```
+
+- multiplication rules:
+
+```text
+dt^2 = 0
+dt\,dW_t = 0
+dW_t^2 = dt
+```
+
+- Ito's lemma in one dimension
+- applying Ito's lemma to `log(S_t)` as preparation for GBM
+- applying Ito's lemma to `V(S,t)` as preparation for Black-Scholes
+
+Visual explanations:
+
+- Brownian path roughness versus smooth path intuition
+- quadratic variation convergence
+- simple stochastic integral accumulation
+- comparison between ordinary chain rule and Ito correction
+
+Acceptance criteria:
+
+- stochastic integral notation is introduced before Ito's lemma
+- `dW_t^2 = dt` is explained through quadratic variation, not hand-waved
+- Ito's lemma is stated clearly with symbols defined locally
+- the page prepares the reader for full GBM and Black-Scholes derivations
+
+### Milestone 9.4: Geometric Brownian Motion Derivation and Interpretation
+
+Status: partially implemented. Needs a deeper derivation after Milestone 9.3.
 
 Expand the GBM lab into a derivation-driven page.
 
@@ -438,10 +490,13 @@ Graph explanations:
 Acceptance criteria:
 
 - the GBM page explains both the SDE and the discrete simulator
+- the log-price solution is derived using Ito's lemma once Milestone 9.3 exists
 - chart captions explain what should change when parameters move
 - limitations are stated without derailing the introductory flow
 
-### Milestone 9.4: Black-Scholes Derivation and Closed-Form Intuition
+### Milestone 9.5: Black-Scholes Derivation and Closed-Form Intuition
+
+Status: partially implemented. Needs a deeper derivation after Milestone 9.3.
 
 Expand the Black-Scholes lab with a guided derivation.
 
@@ -467,10 +522,11 @@ Graph explanations:
 Acceptance criteria:
 
 - the derivation is stepwise and symbol definitions are local to the section
+- Ito's lemma is used only after the stochastic calculus primer has introduced it
 - the closed-form formula is connected back to the implementation
 - the graphs explain expected shapes and parameter sensitivities
 
-### Milestone 9.5: Monte Carlo Pricing Intuition and Convergence
+### Milestone 9.6: Monte Carlo Pricing Intuition and Convergence
 
 Expand the Monte Carlo lab with the probability argument behind pricing by
 simulation.
@@ -504,7 +560,7 @@ Acceptance criteria:
 - convergence charts explicitly discuss noise and sample size
 - the strengths and weaknesses of Monte Carlo are stated before PDE comparison
 
-### Milestone 9.6: Greeks as Practical Risk Measures
+### Milestone 9.7: Greeks as Practical Risk Measures
 
 Expand the Greeks page beyond calculation formulas into practical modelling and
 risk intuition.
@@ -534,7 +590,7 @@ Acceptance criteria:
 - chart explanations discuss expected call/put behavior
 - the page clarifies that Greeks are local approximations, not full risk models
 
-### Milestone 9.7: PDE Solver Intuition, Schemes, and Error Sources
+### Milestone 9.8: PDE Solver Intuition, Schemes, and Error Sources
 
 Expand the PDE lab with numerical-method intuition.
 
