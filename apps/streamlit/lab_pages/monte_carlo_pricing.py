@@ -41,6 +41,19 @@ def render() -> None:
     st.subheader("Concept")
     st.markdown(
         """
+        Monte Carlo starts from the same pricing identity used in the
+        Black-Scholes closed-form derivation:
+
+        1. simulate possible future terminal prices under the risk-neutral
+           model,
+        2. compute the option payoff in each scenario,
+        3. discount those payoffs back to today,
+        4. average them.
+
+        The method is simple because expectation is a long-run average. It is
+        powerful because the payoff can be complicated; we only need to be able
+        to simulate the model and evaluate the payoff.
+
         Symbols used below:
 
         - $V_0$: option value today
@@ -49,15 +62,61 @@ def render() -> None:
         - $S_T$: simulated terminal underlying price
         - $\\Phi(S_T)$: option payoff at maturity
         - $N$: number of simulated paths
+        - $S_T^{(i)}$: terminal price from simulated path $i$
         - $\\hat{V}_0$: Monte Carlo estimate of the option value
         """
     )
 
     st.subheader("Math")
+    st.markdown(
+        """
+        Under risk-neutral pricing, today's value is the discounted expected
+        payoff:
+        """
+    )
     st.markdown(r"$$V_0 = e^{-rT} E^Q[\Phi(S_T)]$$")
+    st.markdown(
+        """
+        A simulation replaces the expectation with a sample average. First draw
+        terminal prices:
+        """
+    )
+    st.markdown(
+        "$$"
+        r"S_T^{(1)}, S_T^{(2)}, \ldots, S_T^{(N)}"
+        "$$"
+    )
+    st.markdown(
+        """
+        Then average the discounted payoffs:
+        """
+    )
     st.markdown(
         r"""
         $$\hat{V}_0 = e^{-rT}\frac{1}{N}\sum_{i=1}^{N}\Phi(S_T^{(i)})$$
+        """
+    )
+    st.markdown(
+        """
+        The law of large numbers is the reason this works: as $N$ grows, the
+        sample average tends toward the model expectation.
+        """
+    )
+    st.markdown(
+        r"""
+        $$
+        \frac{1}{N}
+        \sum_{i=1}^{N}
+        \Phi(S_T^{(i)})
+        \longrightarrow
+        E^Q[\Phi(S_T)]
+        $$
+        """
+    )
+    st.markdown(
+        """
+        The estimate is still random for finite $N$. The standard error measures
+        the uncertainty of the sample average:
         """
     )
     st.markdown(
@@ -66,6 +125,19 @@ def render() -> None:
         r"\frac{\operatorname{std}(e^{-rT}\Phi(S_T))}{\sqrt{N}}"
         "$$"
     )
+    st.markdown(
+        """
+        The important scaling is $1/\\sqrt{N}$. To cut the standard error by a
+        factor of 10, we need about 100 times as many paths. That slow
+        convergence is the main price we pay for Monte Carlo's flexibility.
+        """
+    )
+    st.markdown(
+        """
+        A rough 95 percent confidence interval is:
+        """
+    )
+    st.markdown(r"$$\hat{V}_0 \pm 1.96\,\operatorname{SE}(\hat{V}_0)$$")
 
     st.subheader("Implementation")
     payoff_tab, pricer_tab = st.tabs(["Payoffs", "Monte Carlo pricer"])
@@ -143,12 +215,28 @@ def render() -> None:
     )
 
     if result.paths is not None:
-        st.markdown("Sample simulated paths:")
+        st.markdown(
+            """
+            Sample simulated paths:
+
+            Each line is one possible risk-neutral price path. The path fan
+            shows model uncertainty through time, but the price estimate uses
+            the payoffs at maturity.
+            """
+        )
         sample_path_count = min(25, n_paths)
         st.line_chart(result.paths[:sample_path_count].T)
 
-    st.markdown("Terminal price distribution:")
-    st.caption("This is the distribution of simulated terminal prices $S_T$ across paths.")
+    st.markdown(
+        """
+        Terminal price distribution:
+
+        This is the distribution of simulated terminal prices $S_T$ across
+        paths. The option payoff is applied to this distribution. For calls,
+        only the right side above the strike contributes positive payoff; for
+        puts, only the left side below the strike contributes positive payoff.
+        """
+    )
     st.vega_lite_chart(
         [{"terminal_price": float(value)} for value in result.terminal_prices],
         {
@@ -166,7 +254,14 @@ def render() -> None:
         use_container_width=True,
     )
 
-    st.markdown("Payoff diagram:")
+    st.markdown(
+        """
+        Payoff diagram:
+
+        Monte Carlo does not need a closed-form price. It only needs the payoff
+        function $\\Phi(S_T)$ evaluated on each simulated terminal price.
+        """
+    )
     payoff_spots = linspace(max(0.01, strike * 0.5), strike * 1.5, 80)
     st.vega_lite_chart(
         payoff_rows(
@@ -180,7 +275,15 @@ def render() -> None:
         use_container_width=True,
     )
 
-    st.markdown("Convergence against Black-Scholes:")
+    st.markdown(
+        """
+        Convergence against Black-Scholes:
+
+        For this European option, Black-Scholes gives an analytical benchmark.
+        The Monte Carlo estimate should move toward that benchmark as paths
+        increase, but not monotonically. Each point is still a random estimate.
+        """
+    )
     convergence_counts = _convergence_counts(n_paths)
     convergence_prices = [
         monte_carlo_price(
@@ -230,7 +333,15 @@ def render() -> None:
         use_container_width=True,
     )
 
-    st.markdown("Pricing error:")
+    st.markdown(
+        """
+        Pricing error:
+
+        This chart subtracts the Black-Scholes benchmark from the Monte Carlo
+        estimate. The error should become less noisy as the path count grows,
+        but the $1/\\sqrt{N}$ convergence rate is slow.
+        """
+    )
     pricing_errors = [price - analytical_price for price in convergence_prices]
     error_y_min, error_y_max = padded_range([*pricing_errors, 0.0])
     st.vega_lite_chart(
@@ -258,7 +369,16 @@ def render() -> None:
     )
     st.caption("Convergence points use increasing path counts from the selected seed.")
 
-    st.markdown("Monte Carlo price surface over spot and volatility:")
+    st.markdown(
+        """
+        Monte Carlo price surface over spot and volatility:
+
+        This is the same pricing idea applied across a grid of market inputs.
+        The surface is useful for intuition, but it is noisier than the
+        Black-Scholes surface because every grid point is estimated from a
+        finite sample.
+        """
+    )
     surface_path_count = min(5_000, max(500, n_paths // 10))
     st.caption(
         f"Surface uses {surface_path_count:,} paths per grid point to keep the page responsive."

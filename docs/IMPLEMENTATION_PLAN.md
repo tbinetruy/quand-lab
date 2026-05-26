@@ -574,6 +574,8 @@ Acceptance criteria:
 
 ### Milestone 9.7: Monte Carlo Pricing Intuition and Convergence
 
+Status: implemented.
+
 Expand the Monte Carlo lab with the probability argument behind pricing by
 simulation.
 
