@@ -32,7 +32,8 @@ def render() -> None:
         Monte Carlo pricing turns the risk-neutral pricing equation into a
         simulation experiment. We simulate many possible terminal prices,
         evaluate the option payoff in each scenario, average those payoffs, and
-        discount back to today.
+        discount back to today. The Foundations page introduces the option
+        payoff vocabulary used here.
         """
     )
 

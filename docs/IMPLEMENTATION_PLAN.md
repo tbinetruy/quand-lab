@@ -345,6 +345,8 @@ actual typed Python implementation.
 
 ### Milestone 9.1: Foundations and Option Vocabulary
 
+Status: implemented.
+
 Introduce the basic objects used throughout the lab.
 
 Topics:

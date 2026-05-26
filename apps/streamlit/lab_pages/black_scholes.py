@@ -27,7 +27,8 @@ def render() -> None:
         Black-Scholes gives a closed-form price for European calls and puts
         under a specific set of assumptions. This is the benchmark we will use
         when we later check Monte Carlo convergence and finite-difference
-        solvers.
+        solvers. If calls, puts, moneyness, or time value are new, start with
+        the Foundations page first.
         """
     )
 

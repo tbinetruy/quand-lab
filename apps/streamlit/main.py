@@ -3,6 +3,7 @@ from __future__ import annotations
 from lab_pages import (
     black_scholes,
     domain_model,
+    foundations,
     gbm_simulation,
     greeks,
     monte_carlo_pricing,
@@ -29,10 +30,11 @@ def render_intro() -> None:
     st.markdown(
         """
         1. Build a small domain vocabulary.
-        2. Implement Black-Scholes closed-form pricing.
-        3. Simulate geometric Brownian motion.
-        4. Compare Monte Carlo prices against the analytical result.
-        5. Add Greeks, hedging, and finite-difference solvers.
+        2. Learn the basic option payoff and pricing vocabulary.
+        3. Implement Black-Scholes closed-form pricing.
+        4. Simulate geometric Brownian motion.
+        5. Compare Monte Carlo prices against the analytical result.
+        6. Add Greeks, hedging, and finite-difference solvers.
         """
     )
 
@@ -55,6 +57,7 @@ def main() -> None:
             "Lab",
             options=[
                 "Introduction",
+                "Foundations",
                 "Domain Model",
                 "Black-Scholes",
                 "GBM Simulation",
@@ -77,6 +80,8 @@ def main() -> None:
         black_scholes.render()
     elif page == "Domain Model":
         domain_model.render()
+    elif page == "Foundations":
+        foundations.render()
     else:
         render_intro()
 
