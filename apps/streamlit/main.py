@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from lab_pages import black_scholes, domain_model, gbm_simulation, monte_carlo_pricing
+from lab_pages import black_scholes, domain_model, gbm_simulation, greeks, monte_carlo_pricing
 
 import streamlit as st
 from quant_lab import __version__
@@ -52,11 +52,14 @@ def main() -> None:
                 "Black-Scholes",
                 "GBM Simulation",
                 "Monte Carlo Pricing",
+                "Greeks",
             ],
             label_visibility="collapsed",
         )
 
-    if page == "Monte Carlo Pricing":
+    if page == "Greeks":
+        greeks.render()
+    elif page == "Monte Carlo Pricing":
         monte_carlo_pricing.render()
     elif page == "GBM Simulation":
         gbm_simulation.render()

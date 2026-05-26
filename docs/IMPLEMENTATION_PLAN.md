@@ -280,7 +280,9 @@ Acceptance criteria:
 
 ## Milestone 7: Greeks
 
-Add analytical and finite-difference Greeks for Black-Scholes.
+Status: implemented.
+
+Add analytical Greeks and finite-difference Greek approximations for Black-Scholes.
 
 Tasks:
 
@@ -289,7 +291,7 @@ Tasks:
 - vega
 - theta
 - rho
-- finite-difference approximation helpers
+- finite-difference approximation helpers that bump inputs and estimate sensitivities
 - charts for Greek curves and surfaces
 
 Acceptance criteria:
@@ -299,7 +301,9 @@ Acceptance criteria:
 
 ## Milestone 8: Finite-Difference PDE Solver
 
-Add a PDE-based solver after the Black-Scholes and Monte Carlo base is stable.
+Add a finite-difference PDE-based option pricing solver after the Black-Scholes and Monte Carlo base is stable.
+
+This is different from Milestone 7 finite-difference Greeks: here we discretize the Black-Scholes PDE over stock and time grids to compute option prices.
 
 Methods:
 
