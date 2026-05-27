@@ -791,9 +791,16 @@ Conventions:
 
 - assume the reader has completed Milestones 1-10
 - formal katas are long-form course chapters, not short dashboard pages
+- do not optimize for brevity; we are on computers, not saving paper
 - define every symbol before using it
+- introduce every symbol in prose before the first equation that uses it
+- explain whether a symbol is fixed, moving, local, global, or a dummy variable
+- write derivations in the order the reader needs, not the compressed order an
+  expert might keep mentally
 - do not use a concept before it has been explained, unless the page explicitly
   marks it as an admission or a forward reference
+- do not skip algebraic or conceptual transition steps merely because they are
+  standard
 - label theorem-like statements as definition, proposition, proof sketch, or
   admission
 - keep a dependency chain between katas; if a page relies on a previous kata,
@@ -842,6 +849,8 @@ Where This Will Be Used Next
 ```
 
 ### Milestone 11.1: Analysis and Approximation Kata
+
+Status: implemented.
 
 Rebuild the calculus tools used throughout the introductory lab.
 
@@ -1115,7 +1124,56 @@ Acceptance criteria:
 - the PDE derivation tracks dividend cashflows and self-financing assumptions
 - the closed form is connected to the risk-neutral terminal distribution
 
-### Milestone 11.8: Numerical Pricing Methods Kata
+### Milestone 11.8: Numerical Representation and Floating-Point Kata
+
+Explain why computers approximate numbers and why that matters for numerical
+finance.
+
+Motivation from the intro lab:
+
+- finite differences depend on choosing a grid spacing
+- PDE error does not always improve when parameters are pushed blindly
+- Monte Carlo and Black-Scholes calculations combine many floating-point
+  operations
+- Applied Risk compares small local changes, where roundoff can matter
+
+Topics:
+
+- integers versus real numbers in mathematics and computers
+- binary representation and why many decimals are not exactly representable
+- floating-point numbers as sign, significand, and exponent
+- machine epsilon
+- absolute error versus relative error
+- rounding error and accumulation
+- cancellation error, especially subtracting nearly equal numbers
+- underflow, overflow, and scaling
+- conditioning: problem sensitivity versus algorithm error
+- truncation error versus roundoff error
+- why smaller finite-difference bumps are not always better
+- practical numerical habits in Python / NumPy
+
+Visuals:
+
+- number line with uneven floating-point spacing
+- binary fraction representation of simple decimals
+- rounding to nearest representable number
+- cancellation diagram for nearly equal quantities
+- U-shaped total error curve: truncation error down, roundoff error up
+- finite-difference bump-size experiment
+
+Admissions:
+
+- full IEEE-754 details can be summarized rather than exhaustively specified
+
+Acceptance criteria:
+
+- the reader understands that numerical error is not only mathematical
+  discretization error
+- finite-difference bump-size failure is explained through truncation and
+  roundoff tradeoff
+- later numerical pricing pages can refer back to floating-point representation
+
+### Milestone 11.9: Numerical Pricing Methods Kata
 
 Rebuild Monte Carlo and PDE numerics with more numerical-analysis structure.
 
@@ -1157,7 +1215,7 @@ Acceptance criteria:
 - stability is shown visually before formal conditions
 - the PDE grid implementation is connected back to numerical analysis concepts
 
-### Milestone 11.9: Portfolio Risk Rebuilt Kata
+### Milestone 11.10: Portfolio Risk Rebuilt Kata
 
 Formalize the applied risk workflow.
 

@@ -4,6 +4,7 @@ from lab_pages import (
     applied_risk,
     black_scholes,
     domain_model,
+    formal_analysis,
     formal_katas,
     foundations,
     gbm_simulation,
@@ -36,6 +37,7 @@ INTRO_PAGES = [
 
 FORMAL_PAGES = [
     "Formal Katas Overview",
+    "11.1 Analysis and Approximation",
 ]
 
 
@@ -95,7 +97,9 @@ def main() -> None:
             options=page_options,
         )
 
-    if page == "Formal Katas Overview":
+    if page == "11.1 Analysis and Approximation":
+        formal_analysis.render()
+    elif page == "Formal Katas Overview":
         formal_katas.render()
     elif page == "Applied Risk":
         applied_risk.render()
